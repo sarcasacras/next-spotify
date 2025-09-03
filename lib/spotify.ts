@@ -35,3 +35,7 @@ export async function getUserLikedTracks(
 ): Promise<SpotifyLikedTracksResponse> {
   return spotifyFetch("/me/tracks", accessToken);
 }
+
+export async function getUserProfile(accessToken: string) {
+  return spotifyFetch("/me", accessToken);
+}

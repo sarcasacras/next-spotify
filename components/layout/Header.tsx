@@ -1,15 +1,29 @@
+"use client";
+
+import Image from "next/image";
+import { useSession, signIn, signOut } from "next-auth/react";
+import { useState, useEffect } from "react";
+import { getUserProfile } from "@/lib/spotify";
+
 export default function Header() {
+  const { data: session, status } = useSession();
+  const [userProfile, setUserProfile] = useState<any>(null);
+  
+  useEffect(() => {
+    if (session?.accessToken) {
+      getUserProfile(session.accessToken)
+        .then(setUserProfile)
+        .catch(err => console.error("Error fetching user profile:", err));
+    }
+  }, [session?.accessToken]);
+  
+
   return (
     <header className="bg-surface border-b border-border h-16">
       <div className="flex items-center justify-between h-full px-6">
-        {/* Left navigation section */}
-        <div className="flex items-center gap-2">
-          <button className="p-2 rounded-full cursor-pointer bg-surface-hover text-text-secondary hover:text-text-primary transition-colors">
-            ←
-          </button>
-          <button className="p-2 rounded-full cursor-pointer bg-surface-hover text-text-secondary hover:text-text-primary transition-colors">
-            →
-          </button>
+        {/* Logo section */}
+        <div className="flex items-center justify-center gap-2">
+          <Image src="/logo.png" alt="" height={48} width={100}/>
         </div>
 
         {/* Center search bar */}
@@ -23,9 +37,34 @@ export default function Header() {
 
         {/* Right user section */}
         <div className="flex items-center">
-          <button className="px-4 py-2 cursor-pointer bg-primary text-text-primary rounded-full font-medium hover:bg-primary-hover transition-colors">
-            Sign In
-          </button>
+          {status === "loading" ? (
+            <div className="px-4 py-2 text-gray-400">Loading...</div>
+          ) : session ? (
+            <div className="flex items-center gap-3">
+              {userProfile?.images?.[0]?.url && (
+                <Image
+                  src={userProfile.images[0].url}
+                  alt={userProfile.display_name || "User"}
+                  width={64}
+                  height={64}
+                  className="rounded-full w-10 h-10"
+                />
+              )}
+              <button 
+                onClick={() => signOut()}
+                className="px-4 py-2 cursor-pointer bg-surface-hover text-text-primary rounded-full font-medium hover:bg-secondary transition-colors"
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <button 
+              onClick={() => signIn("spotify")}
+              className="px-4 py-2 cursor-pointer bg-primary text-text-primary rounded-full font-medium hover:bg-primary-hover transition-colors"
+            >
+              Sign In
+            </button>
+          )}
         </div>
       </div>
     </header>
