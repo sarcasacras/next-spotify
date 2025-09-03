@@ -2,44 +2,40 @@
 
 import { useSession } from "next-auth/react";
 import { getUserLikedTracks } from "@/lib/spotify";
-import { useState, useEffect } from "react";
-import { SpotifyAlbum, SpotifyLikedTracksResponse } from "@/types/spotify";
+import { SpotifyAlbum } from "@/types/spotify";
 import AlbumGrid from "@/components/music/AlbumGrid";
 import { extractUniqueAlbums } from "@/lib/album-utils";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
   const { data: session } = useSession();
-  const [tracks, setTracks] = useState<SpotifyLikedTracksResponse | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [albums, setAlbums] = useState<SpotifyAlbum[]>([]);
 
-  const fetchTracks = async () => {
-    if (!session?.accessToken) return;
-    setLoading(true);
+  const { data: tracks, isLoading, error } = useQuery({
+    queryKey: ["likedTracks", session?.accessToken],
+    queryFn: () => getUserLikedTracks(session!.accessToken as string),
+    enabled: !!session?.accessToken,
+  });
 
-    try {
-      const data = await getUserLikedTracks(session.accessToken);
-      setTracks(data);
-      const uniqueAlbums = extractUniqueAlbums(data);
-      setAlbums(uniqueAlbums);
-    } catch (error) {
-      console.error("Error fetching tracks", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const albums: SpotifyAlbum[] = tracks ? extractUniqueAlbums(tracks) : [];
 
-  useEffect(() => {
-    if (session?.accessToken) {
-      fetchTracks();
-    }
-  }, [session?.accessToken]);
+  if (!session?.accessToken) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <p className="text-gray-400">Please sign in to view your music library</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black text-white">
       <main className="p-8">
-
-        {loading && <p className="text-gray-400">Loading your music...</p>}
+        {isLoading && <p className="text-gray-400">Loading your music...</p>}
+        
+        {error && (
+          <p className="text-red-400">
+            Error loading your music: {error.message}
+          </p>
+        )}
 
         {albums.length > 0 && <AlbumGrid albums={albums} />}
       </main>
