@@ -15,6 +15,22 @@ export interface SpotifyTrack {
   explicit: boolean;
   popularity: number;
   uri: string;
+  album: SpotifyAlbum;
+}
+
+export interface SpotifyAlbum {
+  id: string;
+  name: string;
+  images: Array<{
+    url: string;
+    height: number;
+    width: number;
+  }>;
+  release_date: string;
+  artists: Array<{
+    id: string;
+    name: string;
+  }>;
 }
 
 export interface SpotifySavedTrack {

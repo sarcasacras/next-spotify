@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { getUserLikedTracks } from "@/lib/spotify";
 import { useState } from "react";
 import { SpotifyLikedTracksResponse } from "@/types/spotify";
+import { extractUniqueAlbums } from "@/lib/album-utils";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -17,6 +18,7 @@ export default function Home() {
     try {
       const data = await getUserLikedTracks(session.accessToken);
       setTracks(data);
+      const uniqueAlbums = extractUniqueAlbums(data);
     } catch (error) {
       console.error("Error deleting tracks", error);
     } finally {
