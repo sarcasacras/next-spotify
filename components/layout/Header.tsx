@@ -2,28 +2,21 @@
 
 import Image from "next/image";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { useState, useEffect } from "react";
-import { getUserProfile } from "@/lib/spotify";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 export default function Header() {
   const { data: session, status } = useSession();
-  const [userProfile, setUserProfile] = useState<any>(null);
-  
-  useEffect(() => {
-    if (session?.accessToken) {
-      getUserProfile(session.accessToken)
-        .then(setUserProfile)
-        .catch(err => console.error("Error fetching user profile:", err));
-    }
-  }, [session?.accessToken]);
-  
+  const {
+    data: userProfile,
+    isLoading: profileLoading,
+  } = useUserProfile(session?.accessToken);
 
   return (
     <header className="bg-surface border-b border-border h-16">
       <div className="flex items-center justify-between h-full px-6">
         {/* Logo section */}
         <div className="flex items-center justify-center gap-2">
-          <Image src="/logo.png" alt="" height={48} width={100}/>
+          <Image src="/logo.png" alt="" height={48} width={100} />
         </div>
 
         {/* Center search bar */}
@@ -41,7 +34,9 @@ export default function Header() {
             <div className="px-4 py-2 text-gray-400">Loading...</div>
           ) : session ? (
             <div className="flex items-center gap-3">
-              {userProfile?.images?.[0]?.url && (
+              {profileLoading ? (
+                <div className="w-10 h-10 rounded-full bg-surface-hover animate-pulse" />
+              ) : userProfile?.images?.[0]?.url ? (
                 <Image
                   src={userProfile.images[0].url}
                   alt={userProfile.display_name || "User"}
@@ -49,8 +44,14 @@ export default function Header() {
                   height={64}
                   className="rounded-full w-10 h-10"
                 />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-surface-hover flex items-center justify-center">
+                  <span className="text-text-secondary text-sm">
+                    {userProfile?.display_name?.[0] || "U"}
+                  </span>
+                </div>
               )}
-              <button 
+              <button
                 onClick={() => signOut()}
                 className="px-4 py-2 cursor-pointer bg-surface-hover text-text-primary rounded-full font-medium hover:bg-secondary transition-colors"
               >
@@ -58,7 +59,7 @@ export default function Header() {
               </button>
             </div>
           ) : (
-            <button 
+            <button
               onClick={() => signIn("spotify")}
               className="px-4 py-2 cursor-pointer bg-primary text-text-primary rounded-full font-medium hover:bg-primary-hover transition-colors"
             >
@@ -68,5 +69,5 @@ export default function Header() {
         </div>
       </div>
     </header>
-  )
+  );
 }

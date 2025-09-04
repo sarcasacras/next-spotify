@@ -40,3 +40,18 @@ export interface SpotifySavedTrack {
 
 export interface SpotifyLikedTracksResponse
   extends SpotifyPaginatedResponse<SpotifySavedTrack> {}
+
+export interface SpotifyUserProfile {
+  id: string;
+  display_name: string;
+  email?: string;
+  images: Array<{
+    url: string;
+    height: number;
+    width: number;
+  }>;
+  followers: {
+    total: number;
+  };
+  country?: string;
+}
