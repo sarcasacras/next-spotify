@@ -2,6 +2,7 @@ import type { SpotifyAlbum } from "@/types/spotify";
 import Image from "next/image";
 import { useState } from "react";
 import AlbumModal from "./AlbumModal";
+import { motion, AnimatePresence } from "motion/react";
 
 interface AlbumGridProps {
   albums: SpotifyAlbum[];
@@ -18,7 +19,10 @@ export default function AlbumGrid({ albums }: AlbumGridProps) {
           className="cursor-pointer"
           onClick={() => setSelectedAlbum(album)}
         >
-          <div className="mb-2">
+          <motion.div 
+            className="mb-2"
+            layoutId={`album-${album.id}`}
+          >
             <Image
               src={album.images[0]?.url}
               alt={album.name}
@@ -26,14 +30,18 @@ export default function AlbumGrid({ albums }: AlbumGridProps) {
               width={300}
               height={300}
             />
-          </div>
+          </motion.div>
         </div>
       ))}
       
-      <AlbumModal
-        album={selectedAlbum}
-        onClose={() => setSelectedAlbum(null)}
-      />
+      <AnimatePresence>
+        {selectedAlbum && (
+          <AlbumModal
+            album={selectedAlbum}
+            onClose={() => setSelectedAlbum(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
