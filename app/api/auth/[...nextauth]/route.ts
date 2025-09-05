@@ -3,6 +3,40 @@ import SpotifyProvider from "next-auth/providers/spotify";
 import type { JWT } from "next-auth/jwt";
 import type { Account, Session } from "next-auth";
 
+async function refreshAccessToken(token: JWT) {
+  try {
+    const response = await fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": `Basic ${Buffer.from(
+          `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
+        ).toString('base64')}`,
+      },
+      body: new URLSearchParams({
+        grant_type: "refresh_token",
+        refresh_token: token.refreshToken!,
+      }),
+    });
+    const refreshedTokens = await response.json();
+    if (!response.ok) {
+      throw refreshedTokens;
+    }
+    return {
+      ...token,
+      accessToken: refreshedTokens.access_token,
+      accessTokenExpires: Date.now() + refreshedTokens.expires_in * 1000,
+      refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
+    };
+  } catch (error) {
+    console.error("Error refreshing access token:", error);
+    return {
+      ...token,
+      error: "RefreshAccessTokenError",
+    };
+  }
+}
+
 export const authOptions = {
   providers: [
     SpotifyProvider({
@@ -10,22 +44,30 @@ export const authOptions = {
       clientSecret: process.env.SPOTIFY_CLIENT_SECRET!,
       authorization: {
         params: {
-          scope: "user-library-read user-read-private"
-        }
-      }
+          scope: "user-library-read user-read-private",
+        },
+      },
     }),
   ],
   callbacks: {
     async jwt({ token, account }: { token: JWT; account: Account | null }) {
       if (account) {
         token.accessToken = account.access_token;
+        token.refreshToken = account.refresh_token;
+        token.accessTokenExpires = account.expires_at
+          ? account.expires_at * 1000
+          : 0;
       }
-      return token;
+      if (Date.now() < token.accessTokenExpires!) {
+        return token;
+      }
+      return refreshAccessToken(token);
     },
-    async session({session, token}: {session: Session; token: JWT}) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       session.accessToken = token.accessToken;
+      session.error = token.error;
       return session;
-    }
+    },
   },
 };
 
