@@ -14,10 +14,11 @@ export default function AlbumGrid({ albums }: AlbumGridProps) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
       {albums.map((album) => (
-        <div
+        <motion.div
           key={album.id}
           className="cursor-pointer"
           onClick={() => setSelectedAlbum(album)}
+          whileHover={{scale: 1.05}}
         >
           <motion.div 
             className="mb-2"
@@ -31,7 +32,7 @@ export default function AlbumGrid({ albums }: AlbumGridProps) {
               height={300}
             />
           </motion.div>
-        </div>
+        </motion.div>
       ))}
       
       <AnimatePresence>
