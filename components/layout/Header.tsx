@@ -51,9 +51,11 @@ export default function Header() {
               )}
               <button
                 onClick={() => signOut()}
-                className="px-4 py-2 cursor-pointer bg-surface-hover text-text-primary rounded-full font-medium hover:bg-secondary transition-colors"
+                className="relative inline-flex cursor-pointer items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-full group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 dark:text-white dark:hover:text-gray-900"
               >
-                Sign Out
+                <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-surface rounded-full group-hover:bg-transparent group-hover:dark:bg-transparent font-bold focus:outline-none">
+                  Sign Out
+                </span>
               </button>
             </div>
           ) : (
