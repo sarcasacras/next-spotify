@@ -6,11 +6,9 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 
 export default function Header() {
   const { data: session, status } = useSession();
-  const {
-    data: userProfile,
-    isLoading: profileLoading,
-  } = useUserProfile(session?.accessToken);
-
+  const { data: userProfile, isLoading: profileLoading } = useUserProfile(
+    session?.accessToken
+  );
   return (
     <header className="bg-surface border-b border-border h-16">
       <div className="flex items-center justify-between h-full px-6">
@@ -61,9 +59,11 @@ export default function Header() {
           ) : (
             <button
               onClick={() => signIn("spotify")}
-              className="px-4 py-2 cursor-pointer bg-primary text-text-primary rounded-full font-medium hover:bg-primary-hover transition-colors"
+              className="relative inline-flex cursor-pointer items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-full group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 dark:text-white dark:hover:text-gray-900"
             >
-              Sign In
+              <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-surface rounded-full group-hover:bg-transparent group-hover:dark:bg-transparent font-bold focus:outline-none">
+                Sign In
+              </span>
             </button>
           )}
         </div>
