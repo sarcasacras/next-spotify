@@ -1,14 +1,17 @@
-import type { SpotifyAlbum } from "@/types/spotify";
+import type { SpotifyAlbum, SpotifyLikedTracksResponse } from "@/types/spotify";
+import { getTracksForAlbum } from "@/lib/album-utils";
 import Image from "next/image";
 import { useState } from "react";
 import AlbumModal from "./AlbumModal";
 import { motion, AnimatePresence } from "motion/react";
 
+
 interface AlbumGridProps {
   albums: SpotifyAlbum[];
+  likedTracks: SpotifyLikedTracksResponse | undefined
 }
 
-export default function AlbumGrid({ albums }: AlbumGridProps) {
+export default function AlbumGrid({ albums, likedTracks }: AlbumGridProps) {
   const [selectedAlbum, setSelectedAlbum] = useState<SpotifyAlbum | null>(null);
 
   return (
@@ -40,6 +43,7 @@ export default function AlbumGrid({ albums }: AlbumGridProps) {
           <AlbumModal
             album={selectedAlbum}
             onClose={() => setSelectedAlbum(null)}
+            likedTracks={likedTracks ? getTracksForAlbum(likedTracks, selectedAlbum.id) : []}
           />
         )}
       </AnimatePresence>

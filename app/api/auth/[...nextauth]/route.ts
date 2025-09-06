@@ -9,9 +9,9 @@ async function refreshAccessToken(token: JWT) {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": `Basic ${Buffer.from(
+        Authorization: `Basic ${Buffer.from(
           `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
-        ).toString('base64')}`,
+        ).toString("base64")}`,
       },
       body: new URLSearchParams({
         grant_type: "refresh_token",
@@ -30,9 +30,13 @@ async function refreshAccessToken(token: JWT) {
     };
   } catch (error) {
     console.error("Error refreshing access token:", error);
+    console.error("Full error details:", JSON.stringify(error, null, 2));
     return {
       ...token,
       error: "RefreshAccessTokenError",
+      refreshToken: undefined,
+      accessToken: undefined,
+      accessTokenExpires: undefined,
     };
   }
 }
@@ -61,7 +65,15 @@ export const authOptions = {
       if (Date.now() < token.accessTokenExpires!) {
         return token;
       }
-      return refreshAccessToken(token);
+      if (!token.refreshToken) {
+        throw new Error("No refresh token available");
+      }
+      const refreshedToken = await refreshAccessToken(token);
+      if (refreshedToken.error) {
+        throw new Error("Refresh token invalid!");
+      }
+
+      return refreshedToken;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
       session.accessToken = token.accessToken;

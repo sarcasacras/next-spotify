@@ -37,7 +37,7 @@ export default function Home() {
           </p>
         )}
 
-        {albums.length > 0 && <AlbumGrid albums={albums} />}
+        {albums.length > 0 && <AlbumGrid albums={albums} likedTracks={tracks} />}
       </main>
     </div>
   );

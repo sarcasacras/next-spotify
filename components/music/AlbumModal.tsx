@@ -1,14 +1,16 @@
-import type { SpotifyAlbum } from "@/types/spotify";
+import type { SpotifyAlbum, SpotifyTrack } from "@/types/spotify";
 import Image from "next/image";
 import { motion } from "motion/react";
 
 interface AlbumModalProps {
   album: SpotifyAlbum | null;
   onClose: () => void;
+  likedTracks: SpotifyTrack[];
 }
 
-export default function AlbumModal({ album, onClose }: AlbumModalProps) {
+export default function AlbumModal({ album, likedTracks, onClose }: AlbumModalProps) {
   if (!album) return null;
+  likedTracks.map(track => console.log(track.name));
 
   return (
     <motion.div 

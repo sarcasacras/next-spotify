@@ -1,15 +1,24 @@
 import type { SpotifyLikedTracksResponse } from "@/types/spotify";
 
 export function extractUniqueAlbums(tracksData: SpotifyLikedTracksResponse) {
-    const albumsMap = new Map();
+  const albumsMap = new Map();
 
-    for (const item of tracksData.items) {
-        const album = item.track.album;
+  for (const item of tracksData.items) {
+    const album = item.track.album;
 
-        if (!albumsMap.has(album.id)) {
-            albumsMap.set(album.id, album);
-        }
+    if (!albumsMap.has(album.id)) {
+      albumsMap.set(album.id, album);
     }
+  }
 
-    return Array.from(albumsMap.values());
+  return Array.from(albumsMap.values());
+}
+
+export function getTracksForAlbum(
+  tracksData: SpotifyLikedTracksResponse,
+  albumId: string
+) {
+  return tracksData.items
+    .filter((item) => item.track.album.id === albumId)
+    .map((item) => item.track);
 }
