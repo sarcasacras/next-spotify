@@ -144,8 +144,6 @@ export default function SpotifyPlayer() {
 
             <motion.button
               onClick={togglePlayPause}
-              whileHover={{ scale: current_track ? 1.1 : 1 }}
-              whileTap={{ scale: current_track ? 0.9 : 1 }}
               disabled={!current_track}
               className={`relative inline-flex cursor-pointer items-center justify-center p-0.5 overflow-hidden rounded-full group transition-all ${
                 current_track
