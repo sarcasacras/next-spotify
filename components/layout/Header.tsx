@@ -3,9 +3,12 @@
 import Image from "next/image";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import Spinner from "@/components/ui/Spinner";
+import { useState } from "react";
 
 export default function Header() {
   const { data: session, status } = useSession();
+  const [isSigningIn, setIsSigningIn] = useState(false);
   const { data: userProfile, isLoading: profileLoading } = useUserProfile(
     session?.accessToken
   );
@@ -60,11 +63,23 @@ export default function Header() {
             </div>
           ) : (
             <button
-              onClick={() => signIn("spotify")}
-              className="relative inline-flex cursor-pointer items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-full group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 dark:text-white dark:hover:text-gray-900"
+              onClick={async () => {
+                setIsSigningIn(true);
+                try {
+                  await signIn("spotify");
+                } finally {
+                  setIsSigningIn(false);
+                }
+              }}
+              disabled={isSigningIn}
+              className="relative inline-flex cursor-pointer items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-full group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 dark:text-white dark:hover:text-gray-900 disabled:opacity-75 disabled:cursor-not-allowed"
             >
-              <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-surface rounded-full group-hover:bg-transparent group-hover:dark:bg-transparent font-bold focus:outline-none">
-                Sign In
+              <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-surface rounded-full group-hover:bg-transparent group-hover:dark:bg-transparent font-bold focus:outline-none flex items-center justify-center min-w-[78px]">
+                {isSigningIn ? (
+                  <Spinner size="sm" className="text-white" />
+                ) : (
+                  "Sign In"
+                )}
               </span>
             </button>
           )}
