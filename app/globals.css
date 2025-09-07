@@ -49,3 +49,32 @@ body {
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 }
+
+/* Custom volume slider styles */
+.slider::-webkit-slider-thumb {
+    appearance: none;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.slider:hover::-webkit-slider-thumb {
+    background: #1db954;
+}
+
+.slider::-moz-range-thumb {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s;
+}
+
+.slider:hover::-moz-range-thumb {
+    background: #1db954;
+}
