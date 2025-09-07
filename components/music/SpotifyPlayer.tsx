@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { useSpotifyPlayer } from "@/contexts/SpotifyPlayerContext";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
@@ -23,6 +23,7 @@ export default function SpotifyPlayer() {
 
   const [localPosition, setLocalPosition] = useState(position);
   const [isDragging] = useState(false);
+  const volumeSliderRef = useRef<HTMLInputElement>(null);
 
   // Update local position when not dragging
   useEffect(() => {
@@ -42,10 +43,9 @@ export default function SpotifyPlayer() {
   }, [is_paused, isDragging, duration]);
 
   // Initialize volume slider gradient on mount and volume changes
-  useEffect(() => {
-    const volumeSlider = document.querySelector('.slider') as HTMLElement;
-    if (volumeSlider) {
-      volumeSlider.style.setProperty('--value', `${volume * 100}%`);
+  useLayoutEffect(() => {
+    if (volumeSliderRef.current) {
+      volumeSliderRef.current.style.setProperty('--value', `${volume * 100}%`);
     }
   }, [volume]);
 
@@ -249,12 +249,14 @@ export default function SpotifyPlayer() {
 
           <div className="flex items-center w-24">
             <input
+              ref={volumeSliderRef}
               type="range"
               min="0"
               max="1"
               step="0.01"
               value={volume}
               onChange={handleVolumeChange}
+              style={{ '--value': `${volume * 100}%` } as React.CSSProperties}
               className="w-full h-1 bg-surface-hover rounded-lg appearance-none cursor-pointer slider"
             />
           </div>
