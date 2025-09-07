@@ -32,12 +32,12 @@ export default function SpotifyTrackItem({
     <motion.div
       className={`flex justify-center items-center mx-4 my-4 rounded-2xl cursor-pointer border-2 transition-colors ${
         isCurrentTrack
-          ? "bg-green-900/30 border-green-500"
-          : "bg-black border-transparent hover:bg-gray-900 hover:border-green-500"
+          ? "bg-gradient-to-r from-pink-900/20 to-orange-900/20 border-pink-500"
+          : "bg-black border-transparent hover:bg-gray-900 hover:border-pink-500"
       }`}
       whileHover={{
         scale: 1.02,
-        boxShadow: "0 0 20px rgba(29, 185, 84, 0.3)",
+        boxShadow: "0 0 20px rgba(236, 72, 153, 0.3)",
       }}
       whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
@@ -48,7 +48,7 @@ export default function SpotifyTrackItem({
           <div className="mr-4 flex items-center justify-center">
             {is_paused ? (
               <svg
-                className="w-4 h-4 text-green-500"
+                className="w-4 h-4 text-pink-500"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -61,15 +61,15 @@ export default function SpotifyTrackItem({
             ) : (
               <div className="flex space-x-1">
                 <div
-                  className="w-1 h-4 bg-green-500 animate-pulse"
+                  className="w-1 h-4 bg-pink-500 animate-pulse"
                   style={{ animationDelay: "0ms" }}
                 />
                 <div
-                  className="w-1 h-4 bg-green-500 animate-pulse"
+                  className="w-1 h-4 bg-pink-500 animate-pulse"
                   style={{ animationDelay: "150ms" }}
                 />
                 <div
-                  className="w-1 h-4 bg-green-500 animate-pulse"
+                  className="w-1 h-4 bg-pink-500 animate-pulse"
                   style={{ animationDelay: "300ms" }}
                 />
               </div>
@@ -78,12 +78,12 @@ export default function SpotifyTrackItem({
         )}
         <span
           className={`flex-1 ${
-            isCurrentTrack ? "text-green-400 font-medium" : ""
+            isCurrentTrack ? "text-pink-400 font-medium" : ""
           }`}
         >
           {track.name}
         </span>
-        <span className={`px-4 ${isCurrentTrack ? "text-green-400" : ""}`}>
+        <span className={`px-4 ${isCurrentTrack ? "text-pink-400" : ""}`}>
           {convertToMinutes(track.duration_ms)}
         </span>
       </div>

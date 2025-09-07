@@ -53,7 +53,7 @@ export default function AlbumModal({
           </div>
         </motion.div>
         <motion.div
-          className="w-full bg-gradient-to-r from-zinc-900 to-slate-900 h-[60%] rounded-b-2xl overflow-y-scroll no-scrollbar"
+          className="w-full bg-surface h-[60%] rounded-b-2xl overflow-y-scroll no-scrollbar"
           initial={{ opacity: 0, y: 20, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.95 }}
