@@ -14,7 +14,7 @@ export default function Header() {
     session?.accessToken
   );
   return (
-    <header className="bg-surface border-b border-border h-16">
+    <header className="fixed top-0 left-0 right-0 bg-surface border-b border-border h-16 z-50">
       <div className="flex items-center justify-between h-full px-6">
         {/* Logo section */}
         <div className="relative flex items-center justify-center gap-2">

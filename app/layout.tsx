@@ -35,7 +35,9 @@ export default function RootLayout({
       >
         <Providers>
           <Header />
-          {children}
+          <main className="pt-16">
+            {children}
+          </main>
           <SpotifyPlayer />
         </Providers>
       </body>
