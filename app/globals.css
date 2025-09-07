@@ -51,30 +51,38 @@ body {
 }
 
 /* Custom volume slider styles */
+.slider {
+    background: linear-gradient(to right, #ec4899, #fb923c) 0 / var(--value, 0%) 100% no-repeat, var(--surface-hover);
+}
+
 .slider::-webkit-slider-thumb {
     appearance: none;
     height: 12px;
     width: 12px;
     border-radius: 50%;
-    background: #ffffff;
+    background: linear-gradient(135deg, #ec4899, #fb923c);
     cursor: pointer;
-    transition: background 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.3);
 }
 
 .slider:hover::-webkit-slider-thumb {
-    background: var(--primary);
+    transform: scale(1.2);
+    box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.2);
 }
 
 .slider::-moz-range-thumb {
     height: 12px;
     width: 12px;
     border-radius: 50%;
-    background: #ffffff;
+    background: linear-gradient(135deg, #ec4899, #fb923c);
     cursor: pointer;
     border: none;
-    transition: background 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.3);
 }
 
 .slider:hover::-moz-range-thumb {
-    background: var(--primary);
+    transform: scale(1.2);
+    box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.2);
 }

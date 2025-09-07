@@ -41,6 +41,14 @@ export default function SpotifyPlayer() {
     }
   }, [is_paused, isDragging, duration]);
 
+  // Initialize volume slider gradient on mount and volume changes
+  useEffect(() => {
+    const volumeSlider = document.querySelector('.slider') as HTMLElement;
+    if (volumeSlider) {
+      volumeSlider.style.setProperty('--value', `${volume * 100}%`);
+    }
+  }, [volume]);
+
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
@@ -52,6 +60,8 @@ export default function SpotifyPlayer() {
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
+    // Update CSS custom property for gradient fill
+    e.target.style.setProperty('--value', `${newVolume * 100}%`);
   };
 
   const progressPercentage =
@@ -217,10 +227,10 @@ export default function SpotifyPlayer() {
               onClick={handleSeek}
             >
               <motion.div
-                className="bg-primary h-full rounded-full relative"
+                className="bg-gradient-to-r from-pink-500 to-orange-400 h-full rounded-full relative"
                 style={{ width: `${progressPercentage}%` }}
               >
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-primary rounded-full opacity-0 hover:opacity-100 transition-opacity" />
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-gradient-to-r from-pink-500 to-orange-400 rounded-full opacity-0 hover:opacity-100 transition-opacity" />
               </motion.div>
             </div>
             <span className="text-xs text-text-secondary w-12">
