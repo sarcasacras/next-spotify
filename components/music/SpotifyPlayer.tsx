@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useSpotifyPlayer } from "@/contexts/SpotifyPlayerContext";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
 import convertToMinutes from "@/lib/milliseconds-converter";
 
@@ -66,7 +66,7 @@ export default function SpotifyPlayer() {
     <motion.div
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-zinc-900 to-slate-900 border-t border-gray-800 p-4 z-50"
+      className="fixed bottom-0 left-0 right-0 bg-surface border-t border-border p-4 z-50"
     >
       <div className="max-w-screen-xl mx-auto flex items-center justify-between">
         {/* Track Info */}
@@ -82,9 +82,9 @@ export default function SpotifyPlayer() {
                 className="object-cover rounded-lg"
               />
             ) : (
-              <div className="w-14 h-14 bg-gray-800 rounded-lg flex items-center justify-center">
+              <div className="w-14 h-14 bg-surface-hover rounded-lg flex items-center justify-center">
                 <svg
-                  className="w-6 h-6 text-gray-500"
+                  className="w-6 h-6 text-secondary"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -98,10 +98,10 @@ export default function SpotifyPlayer() {
             )}
           </div>
           <div className="min-w-0 flex-1">
-            <h4 className="text-white font-medium truncate">
+            <h4 className="text-text-primary font-medium truncate">
               {current_track?.name || "No track selected"}
             </h4>
-            <p className="text-gray-400 text-sm truncate">
+            <p className="text-text-secondary text-sm truncate">
               {current_track
                 ? current_track.artists.map((artist) => artist.name).join(", ")
                 : "Choose a track to play"}
@@ -119,8 +119,8 @@ export default function SpotifyPlayer() {
               disabled={!current_track}
               className={`transition-colors ${
                 current_track
-                  ? "text-gray-400 hover:text-white"
-                  : "text-gray-600 cursor-not-allowed"
+                  ? "text-text-secondary hover:text-text-primary"
+                  : "text-secondary cursor-not-allowed"
               }`}
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -137,37 +137,53 @@ export default function SpotifyPlayer() {
               whileHover={{ scale: current_track ? 1.1 : 1 }}
               whileTap={{ scale: current_track ? 0.9 : 1 }}
               disabled={!current_track}
-              className={`rounded-full p-2 transition-colors ${
+              className={`relative inline-flex cursor-pointer items-center justify-center p-0.5 overflow-hidden rounded-full group transition-all ${
                 current_track
-                  ? "bg-white text-black hover:bg-gray-200"
-                  : "bg-gray-600 text-gray-400 cursor-not-allowed"
+                  ? "bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400"
+                  : "bg-surface-hover cursor-not-allowed"
               }`}
             >
-              {is_paused ? (
-                <svg
-                  className="w-6 h-6"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="w-6 h-6"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              )}
+              <span className={`relative p-2 transition-all ease-in duration-75 rounded-full font-bold focus:outline-none ${
+                current_track 
+                  ? "bg-surface group-hover:bg-transparent text-text-primary" 
+                  : "bg-surface text-secondary"
+              }`}>
+                <AnimatePresence mode="wait">
+                  {is_paused ? (
+                    <motion.svg
+                      key="play"
+                      className="w-4 h-4"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      initial={{ scale: 0.6, rotate: -90, opacity: 0 }}
+                      animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                      exit={{ scale: 0.6, rotate: 90, opacity: 0 }}
+                      transition={{ 
+                        duration: 0.3, 
+                        ease: [0.23, 1, 0.320, 1]
+                      }}
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </motion.svg>
+                  ) : (
+                    <motion.svg
+                      key="pause"
+                      className="w-4 h-4"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      initial={{ scale: 0.6, rotate: -90, opacity: 0 }}
+                      animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                      exit={{ scale: 0.6, rotate: 90, opacity: 0 }}
+                      transition={{ 
+                        duration: 0.3, 
+                        ease: [0.23, 1, 0.320, 1]
+                      }}
+                    >
+                      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                    </motion.svg>
+                  )}
+                </AnimatePresence>
+              </span>
             </motion.button>
 
             <motion.button
@@ -177,8 +193,8 @@ export default function SpotifyPlayer() {
               disabled={!current_track}
               className={`transition-colors ${
                 current_track
-                  ? "text-gray-400 hover:text-white"
-                  : "text-gray-600 cursor-not-allowed"
+                  ? "text-text-secondary hover:text-text-primary"
+                  : "text-secondary cursor-not-allowed"
               }`}
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -193,21 +209,21 @@ export default function SpotifyPlayer() {
 
           {/* Progress Bar */}
           <div className="flex items-center space-x-2 w-full">
-            <span className="text-xs text-gray-400 w-12 text-right">
+            <span className="text-xs text-text-secondary w-12 text-right">
               {convertToMinutes(localPosition)}
             </span>
             <div
-              className="flex-1 bg-gray-600 h-1 rounded-full cursor-pointer"
+              className="flex-1 bg-surface-hover h-1 rounded-full cursor-pointer"
               onClick={handleSeek}
             >
               <motion.div
-                className="bg-white h-full rounded-full relative"
+                className="bg-primary h-full rounded-full relative"
                 style={{ width: `${progressPercentage}%` }}
               >
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 hover:opacity-100 transition-opacity" />
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-primary rounded-full opacity-0 hover:opacity-100 transition-opacity" />
               </motion.div>
             </div>
-            <span className="text-xs text-gray-400 w-12">
+            <span className="text-xs text-text-secondary w-12">
               {convertToMinutes(duration)}
             </span>
           </div>
@@ -216,7 +232,7 @@ export default function SpotifyPlayer() {
         {/* Volume Control */}
         <div className="flex items-center space-x-2 flex-1 justify-end">
           <svg
-            className="w-5 h-5 text-gray-400"
+            className="w-5 h-5 text-text-secondary"
             fill="currentColor"
             viewBox="0 0 24 24"
           >
@@ -231,7 +247,7 @@ export default function SpotifyPlayer() {
               step="0.01"
               value={volume}
               onChange={handleVolumeChange}
-              className="w-full h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
+              className="w-full h-1 bg-surface-hover rounded-lg appearance-none cursor-pointer slider"
             />
           </div>
         </div>

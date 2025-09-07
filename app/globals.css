@@ -62,7 +62,7 @@ body {
 }
 
 .slider:hover::-webkit-slider-thumb {
-    background: #1db954;
+    background: var(--primary);
 }
 
 .slider::-moz-range-thumb {
@@ -76,5 +76,5 @@ body {
 }
 
 .slider:hover::-moz-range-thumb {
-    background: #1db954;
+    background: var(--primary);
 }
