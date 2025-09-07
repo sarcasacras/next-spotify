@@ -13,8 +13,8 @@ export default function Header() {
     <header className="bg-surface border-b border-border h-16">
       <div className="flex items-center justify-between h-full px-6">
         {/* Logo section */}
-        <div className="flex items-center justify-center gap-2">
-          <Image src="/logo.png" alt="" height={48} width={100} />
+        <div className="relative flex items-center justify-center gap-2">
+          <img src="/logo.png" alt="" height={48} width={100} />
         </div>
 
         {/* Center search bar */}
@@ -22,7 +22,7 @@ export default function Header() {
           <input
             type="text"
             placeholder="Search..."
-            className="w-full bg-surface-hover rounded-full py-2 px-4 text-text-primary placeholder-text-secondary border border-border focus:border-primary focus:outline-none transition-colors"
+            className="w-full bg-surface-hover font-bold border-2 border-surface focus:border-green-500 focus:outline-none rounded-full py-2 px-4 text-text-primary placeholder-text-secondar transition-all"
           />
         </div>
 
