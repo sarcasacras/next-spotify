@@ -28,7 +28,7 @@ export default function AlbumModal({
       <motion.div
         layoutId={`album-${album.id}`}
         onClick={(e) => e.stopPropagation()}
-        className="flex flex-col min-h-[400px] max-h-[80vh] w-[400px]"
+        className="flex flex-col min-h-[200px] max-h-[80vh] w-[400px]"
       >
         <motion.div className="h-[240px] flex-shrink-0 relative group cursor-pointer">
           <Image
@@ -52,11 +52,29 @@ export default function AlbumModal({
             </h3>
           </div>
         </motion.div>
-        <div className="w-full bg-gradient-to-r from-zinc-900 to-slate-900 h-[60%] rounded-b-2xl overflow-y-scroll no-scrollbar">
-          {likedTracks.map((track) => (
-            <SpotifyTrackItem key={track.id} track={track} />
+        <motion.div 
+          className="w-full bg-gradient-to-r from-zinc-900 to-slate-900 h-[60%] rounded-b-2xl overflow-y-scroll no-scrollbar"
+          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 20, scale: 0.95 }}
+          transition={{ duration: 0.3, delay: 0.1, ease: "easeOut" }}
+        >
+          {likedTracks.map((track, index) => (
+            <motion.div
+              key={track.id}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ 
+                duration: 0.2, 
+                delay: 0.2 + (index * 0.08),
+                ease: "easeOut" 
+              }}
+            >
+              <SpotifyTrackItem track={track} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </motion.div>
     </motion.div>
   );
