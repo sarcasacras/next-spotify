@@ -9,7 +9,7 @@ import React, {
   ReactNode 
 } from 'react';
 import { useSession } from 'next-auth/react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { 
   searchSpotifyTracks, 
   searchUserLibrary, 
@@ -49,6 +49,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
   likedTracks = [] 
 }) => {
   const { data: session } = useSession();
+  const queryClient = useQueryClient();
   const [query, setQuery] = useState('');
   const [searchMode, setSearchMode] = useState<SearchMode>('library');
   const [isOpen, setIsOpen] = useState(false);
@@ -99,10 +100,15 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
     try {
       await saveLikedTrack(trackId, session.accessToken as string);
       setLikedTrackIds(prev => new Set([...prev, trackId]));
+      
+      // Invalidate the main liked tracks query to trigger immediate UI update
+      await queryClient.invalidateQueries({ 
+        queryKey: ["likedTracks", session.accessToken] 
+      });
     } catch (error) {
       console.error('Error saving track:', error);
     }
-  }, [session?.accessToken]);
+  }, [session?.accessToken, queryClient]);
 
   // Check if track is liked
   const isTrackLiked = useCallback((trackId: string) => {
