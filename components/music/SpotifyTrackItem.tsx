@@ -2,6 +2,8 @@ import type { SpotifyTrack } from "@/types/spotify";
 import { motion } from "motion/react";
 import convertToMinutes from "@/lib/milliseconds-converter";
 import { useSpotifyPlayer } from "@/contexts/SpotifyPlayerContext";
+import { useSearch } from "@/contexts/SearchContext";
+import LikeButton from "@/components/ui/LikeButton";
 
 interface SpotifyTrackItemProps {
   track: SpotifyTrack;
@@ -16,6 +18,8 @@ export default function SpotifyTrackItem({
 }: SpotifyTrackItemProps) {
   const { playTrack, playTracks, current_track, is_paused } =
     useSpotifyPlayer();
+    
+  const { toggleLikedTrackMutation, isTrackLiked } = useSearch();
 
   const isCurrentTrack = current_track?.id === track.id;
 
@@ -26,6 +30,10 @@ export default function SpotifyTrackItem({
     } else {
       await playTrack(track.uri);
     }
+  };
+
+  const handleLikeToggle = async (trackId: string, currentlyLiked: boolean) => {
+    await toggleLikedTrackMutation(trackId, currentlyLiked);
   };
 
   return (
@@ -86,6 +94,14 @@ export default function SpotifyTrackItem({
         <span className={`px-4 ${isCurrentTrack ? "text-pink-400" : ""}`}>
           {convertToMinutes(track.duration_ms)}
         </span>
+        
+        {/* Like button for tracks in album modal */}
+        <LikeButton
+          trackId={track.id}
+          isLiked={isTrackLiked(track.id)}
+          onToggle={handleLikeToggle}
+          variant="compact"
+        />
       </div>
     </motion.div>
   );

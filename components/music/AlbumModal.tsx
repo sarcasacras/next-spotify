@@ -1,6 +1,7 @@
 import type { SpotifyAlbum, SpotifyTrack } from "@/types/spotify";
 import Image from "next/image";
 import { motion } from "motion/react";
+import { useEffect } from "react";
 import SpotifyTrackItem from "./SpotifyTrackItem";
 
 interface AlbumModalProps {
@@ -14,8 +15,14 @@ export default function AlbumModal({
   likedTracks,
   onClose,
 }: AlbumModalProps) {
+  // Auto-close modal when all tracks are unliked
+  useEffect(() => {
+    if (likedTracks.length === 0) {
+      onClose();
+    }
+  }, [likedTracks.length, onClose]);
+
   if (!album) return null;
-  console.log(likedTracks);
 
   return (
     <motion.div

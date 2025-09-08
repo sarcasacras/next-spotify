@@ -2,9 +2,11 @@
 
 import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { useSpotifyPlayer } from "@/contexts/SpotifyPlayerContext";
+import { useSearch } from "@/contexts/SearchContext";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
 import convertToMinutes from "@/lib/milliseconds-converter";
+import LikeButton from "@/components/ui/LikeButton";
 
 export default function SpotifyPlayer() {
   const {
@@ -20,6 +22,8 @@ export default function SpotifyPlayer() {
     seek,
     setVolume,
   } = useSpotifyPlayer();
+  
+  const { toggleLikedTrackMutation, isTrackLiked } = useSearch();
 
   const [localPosition, setLocalPosition] = useState(position);
   const [isDragging] = useState(false);
@@ -62,6 +66,10 @@ export default function SpotifyPlayer() {
     setVolume(newVolume);
     // Update CSS custom property for gradient fill
     e.target.style.setProperty('--value', `${newVolume * 100}%`);
+  };
+
+  const handleLikeToggle = async (trackId: string, currentlyLiked: boolean) => {
+    await toggleLikedTrackMutation(trackId, currentlyLiked);
   };
 
   const progressPercentage =
@@ -107,7 +115,7 @@ export default function SpotifyPlayer() {
               </div>
             )}
           </div>
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0">
             <h4 className="text-text-primary font-medium truncate">
               {current_track?.name || "No track selected"}
             </h4>
@@ -117,6 +125,18 @@ export default function SpotifyPlayer() {
                 : "Choose a track to play"}
             </p>
           </div>
+          
+          {/* Like button for current track */}
+          {current_track && (
+            <div className="ml-2">
+              <LikeButton
+                trackId={current_track.id}
+                isLiked={isTrackLiked(current_track.id)}
+                onToggle={handleLikeToggle}
+                variant="compact"
+              />
+            </div>
+          )}
         </div>
 
         {/* Player Controls */}

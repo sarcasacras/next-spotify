@@ -14,6 +14,7 @@ import {
   searchSpotifyTracks, 
   searchUserLibrary, 
   saveLikedTrack, 
+  removeLikedTrack,
   checkLikedTracks 
 } from '@/lib/spotify';
 import type { 
@@ -33,6 +34,8 @@ interface SearchContextType {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   saveLikedTrackMutation: (trackId: string) => Promise<void>;
+  removeLikedTrackMutation: (trackId: string) => Promise<void>;
+  toggleLikedTrackMutation: (trackId: string, currentlyLiked: boolean) => Promise<void>;
   isTrackLiked: (trackId: string) => boolean;
   likedTrackIds: Set<string>;
 }
@@ -110,6 +113,36 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
     }
   }, [session?.accessToken, queryClient]);
 
+  // Remove liked track function
+  const removeLikedTrackMutation = useCallback(async (trackId: string) => {
+    if (!session?.accessToken) return;
+    
+    try {
+      await removeLikedTrack(trackId, session.accessToken as string);
+      setLikedTrackIds(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(trackId);
+        return newSet;
+      });
+      
+      // Invalidate the main liked tracks query to trigger immediate UI update
+      await queryClient.invalidateQueries({ 
+        queryKey: ["likedTracks", session.accessToken] 
+      });
+    } catch (error) {
+      console.error('Error removing track:', error);
+    }
+  }, [session?.accessToken, queryClient]);
+
+  // Toggle liked track function (for convenience)
+  const toggleLikedTrackMutation = useCallback(async (trackId: string, currentlyLiked: boolean) => {
+    if (currentlyLiked) {
+      await removeLikedTrackMutation(trackId);
+    } else {
+      await saveLikedTrackMutation(trackId);
+    }
+  }, [saveLikedTrackMutation, removeLikedTrackMutation]);
+
   // Check if track is liked
   const isTrackLiked = useCallback((trackId: string) => {
     return likedTrackIds.has(trackId);
@@ -125,6 +158,8 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
     isOpen,
     setIsOpen,
     saveLikedTrackMutation,
+    removeLikedTrackMutation,
+    toggleLikedTrackMutation,
     isTrackLiked,
     likedTrackIds,
   };
