@@ -42,11 +42,11 @@ export default function SearchDropdown({ isOpen, onClose }: SearchDropdownProps)
             transition={{ duration: 0.15, ease: "easeOut" }}
           >
             {/* Search Mode Toggle */}
-            <div className="border-b border-border p-3">
+            <div className="border-b border-border p-4">
               <div className="relative flex bg-surface-hover rounded-lg p-1">
                 {/* Animated sliding indicator */}
                 <motion.div
-                  className="absolute inset-y-1 bg-gradient-to-r from-pink-500 to-orange-400 rounded-md shadow-sm"
+                  className="absolute inset-y-0 bg-gradient-to-r from-pink-500 to-orange-400 rounded-lg shadow-sm"
                   layoutId="search-mode-indicator"
                   style={{
                     left: searchMode === 'library' ? '0%' : '50%',
@@ -131,7 +131,7 @@ export default function SearchDropdown({ isOpen, onClose }: SearchDropdownProps)
                       duration: 0.25,
                       ease: "easeOut"
                     }}
-                    className="py-2"
+                    className="py-2 px-2"
                   >
                     {searchResults.map((track, index) => (
                       <motion.div
