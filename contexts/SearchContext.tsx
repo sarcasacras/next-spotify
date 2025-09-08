@@ -51,7 +51,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
   const { data: session } = useSession();
   const queryClient = useQueryClient();
   const [query, setQuery] = useState('');
-  const [searchMode, setSearchMode] = useState<SearchMode>('library');
+  const [searchMode, setSearchMode] = useState<SearchMode>('spotify');
   const [isOpen, setIsOpen] = useState(false);
   const [likedTrackIds, setLikedTrackIds] = useState<Set<string>>(new Set());
 

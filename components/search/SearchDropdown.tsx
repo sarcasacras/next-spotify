@@ -43,83 +43,151 @@ export default function SearchDropdown({ isOpen, onClose }: SearchDropdownProps)
           >
             {/* Search Mode Toggle */}
             <div className="border-b border-border p-3">
-              <div className="flex bg-surface-hover rounded-lg p-1">
-                <button
+              <div className="relative flex bg-surface-hover rounded-lg p-1">
+                {/* Animated sliding indicator */}
+                <motion.div
+                  className="absolute inset-y-1 bg-gradient-to-r from-pink-500 to-orange-400 rounded-md shadow-sm"
+                  layoutId="search-mode-indicator"
+                  style={{
+                    left: searchMode === 'library' ? '0%' : '50%',
+                    width: '50%',
+                  }}
+                  initial={false}
+                  animate={{
+                    left: searchMode === 'library' ? '0%' : '50%',
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 30,
+                    mass: 0.8,
+                  }}
+                />
+                
+                <motion.button
                   onClick={() => setSearchMode('library')}
-                  className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-all ${
+                  className={`relative z-10 flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
                     searchMode === 'library'
-                      ? 'bg-gradient-to-r from-pink-500 to-orange-400 text-white shadow-sm'
+                      ? 'text-white'
                       : 'text-text-secondary hover:text-text-primary'
                   }`}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.15 }}
                 >
                   Your Library
-                </button>
-                <button
+                </motion.button>
+                
+                <motion.button
                   onClick={() => setSearchMode('spotify')}
-                  className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-all ${
+                  className={`relative z-10 flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
                     searchMode === 'spotify'
-                      ? 'bg-gradient-to-r from-pink-500 to-orange-400 text-white shadow-sm'
+                      ? 'text-white'
                       : 'text-text-secondary hover:text-text-primary'
                   }`}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.15 }}
                 >
                   Spotify
-                </button>
+                </motion.button>
               </div>
             </div>
 
             {/* Results */}
             <div className="max-h-80 overflow-y-auto no-scrollbar">
-              {isLoading ? (
-                <div className="flex items-center justify-center py-8">
-                  <Spinner size="sm" className="text-pink-500" />
-                  <span className="ml-3 text-text-secondary">Searching...</span>
-                </div>
-              ) : searchResults.length > 0 ? (
-                <div className="py-2">
-                  {searchResults.map((track, index) => (
-                    <motion.div
-                      key={track.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{
-                        duration: 0.2,
-                        delay: index * 0.05,
-                        ease: "easeOut",
-                      }}
-                    >
-                      <SearchTrackItem
-                        track={track}
-                        isFromLibrary={searchMode === 'library'}
-                      />
-                    </motion.div>
-                  ))}
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center py-8 text-center">
-                  <svg
-                    className="w-12 h-12 text-text-secondary mb-3"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+              <AnimatePresence mode="wait">
+                {isLoading ? (
+                  <motion.div
+                    key="loading"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex items-center justify-center py-8"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                    />
-                  </svg>
-                  <p className="text-text-secondary font-medium">
-                    No tracks found
-                  </p>
-                  <p className="text-text-secondary text-sm mt-1">
-                    {searchMode === 'library' 
-                      ? "Try searching in Spotify instead"
-                      : "Try a different search term"
-                    }
-                  </p>
-                </div>
-              )}
+                    <Spinner size="sm" className="text-pink-500" />
+                    <span className="ml-3 text-text-secondary">Searching...</span>
+                  </motion.div>
+                ) : searchResults.length > 0 ? (
+                  <motion.div
+                    key={`results-${searchMode}`}
+                    initial={{ 
+                      opacity: 0, 
+                      x: searchMode === 'spotify' ? 20 : -20,
+                      scale: 0.98
+                    }}
+                    animate={{ 
+                      opacity: 1, 
+                      x: 0,
+                      scale: 1
+                    }}
+                    exit={{ 
+                      opacity: 0, 
+                      x: searchMode === 'spotify' ? -20 : 20,
+                      scale: 0.98
+                    }}
+                    transition={{ 
+                      duration: 0.25,
+                      ease: "easeOut"
+                    }}
+                    className="py-2"
+                  >
+                    {searchResults.map((track, index) => (
+                      <motion.div
+                        key={track.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{
+                          duration: 0.2,
+                          delay: index * 0.03,
+                          ease: "easeOut",
+                        }}
+                      >
+                        <SearchTrackItem
+                          track={track}
+                          isFromLibrary={searchMode === 'library'}
+                        />
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key={`empty-${searchMode}`}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex flex-col items-center justify-center py-8 text-center"
+                  >
+                    <motion.svg
+                      className="w-12 h-12 text-text-secondary mb-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      initial={{ scale: 0.8 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.1, duration: 0.3, ease: "backOut" }}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                      />
+                    </motion.svg>
+                    <p className="text-text-secondary font-medium">
+                      No tracks found
+                    </p>
+                    <p className="text-text-secondary text-sm mt-1">
+                      {searchMode === 'library' 
+                        ? "Try searching in Spotify instead"
+                        : "Try a different search term"
+                      }
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Footer info */}
