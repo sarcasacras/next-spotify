@@ -8,6 +8,12 @@ export interface SpotifyPaginatedResponse<T> {
   items: T[];
 }
 
+export interface SpotifyArtist {
+  id: string;
+  name: string;
+  uri: string;
+}
+
 export interface SpotifyTrack {
   id: string;
   name: string;
@@ -16,6 +22,7 @@ export interface SpotifyTrack {
   popularity: number;
   uri: string;
   album: SpotifyAlbum;
+  artists: SpotifyArtist[];
 }
 
 export interface SpotifyAlbum {
@@ -55,3 +62,17 @@ export interface SpotifyUserProfile {
   };
   country?: string;
 }
+
+export interface SpotifySearchResponse {
+  tracks: {
+    href: string;
+    limit: number;
+    next: string | null;
+    offset: number;
+    previous: string | null;
+    total: number;
+    items: SpotifyTrack[];
+  };
+}
+
+export type SearchMode = 'library' | 'spotify';

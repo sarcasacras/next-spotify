@@ -49,7 +49,7 @@ export const authOptions = {
       authorization: {
         params: {
           scope:
-            "user-library-read user-read-private user-read-email streaming user-read-playback-state user-modify-playback-state",
+            "user-library-read user-library-modify user-read-private user-read-email streaming user-read-playback-state user-modify-playback-state user-top-read",
         },
       },
     }),
