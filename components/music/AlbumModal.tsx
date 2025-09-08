@@ -38,7 +38,7 @@ export default function AlbumModal({
         onClick={(e) => e.stopPropagation()}
         className="flex flex-col min-h-[200px] max-h-[70vh] w-[400px]"
       >
-        <motion.div className="h-[240px] flex-shrink-0 relative group cursor-pointer">
+        <motion.div className="h-[240px] flex-shrink-0 relative group">
           <Image
             src={album.images[0]?.url}
             alt={album.name}

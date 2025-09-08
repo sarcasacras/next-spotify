@@ -66,7 +66,7 @@ export default function SearchDropdown({ isOpen, onClose }: SearchDropdownProps)
                 
                 <motion.button
                   onClick={() => setSearchMode('library')}
-                  className={`relative z-10 flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                  className={`relative z-10 flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors cursor-pointer ${
                     searchMode === 'library'
                       ? 'text-white'
                       : 'text-text-secondary hover:text-text-primary'
@@ -80,7 +80,7 @@ export default function SearchDropdown({ isOpen, onClose }: SearchDropdownProps)
                 
                 <motion.button
                   onClick={() => setSearchMode('spotify')}
-                  className={`relative z-10 flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                  className={`relative z-10 flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors cursor-pointer ${
                     searchMode === 'spotify'
                       ? 'text-white'
                       : 'text-text-secondary hover:text-text-primary'
