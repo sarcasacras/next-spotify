@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+
 // Simple SVG icons for navigation
 const ChevronLeftIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -26,36 +27,6 @@ export default function Pagination({
   onPageChange,
 }: PaginationProps) {
 
-  const getVisiblePages = () => {
-    const delta = 2;
-    const range: number[] = [];
-    const rangeWithDots: (number | string)[] = [];
-
-    for (
-      let i = Math.max(2, currentPage - delta);
-      i <= Math.min(totalPages - 1, currentPage + delta);
-      i++
-    ) {
-      range.push(i);
-    }
-
-    if (currentPage - delta > 2) {
-      rangeWithDots.push(1, "...");
-    } else {
-      rangeWithDots.push(1);
-    }
-
-    rangeWithDots.push(...range);
-
-    if (currentPage + delta < totalPages - 1) {
-      rangeWithDots.push("...", totalPages);
-    } else {
-      rangeWithDots.push(totalPages);
-    }
-
-    return rangeWithDots;
-  };
-
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowLeft" && currentPage > 1) {
       onPageChange(currentPage - 1);
@@ -72,60 +43,38 @@ export default function Pagination({
       onKeyDown={handleKeyDown}
       tabIndex={0}
     >
-      {/* Pagination controls */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-4">
         {/* Previous button */}
         <motion.button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-300 bg-gray-800/50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-700/50 transition-colors"
+          className="relative inline-flex cursor-pointer items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-full group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 dark:text-white dark:hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
           whileHover={currentPage > 1 ? { scale: 1.05 } : {}}
           whileTap={currentPage > 1 ? { scale: 0.95 } : {}}
         >
-          <ChevronLeftIcon className="w-4 h-4" />
-          Previous
+          <span className="relative px-4 py-2 transition-all ease-in duration-75 bg-surface rounded-full group-hover:bg-transparent group-hover:dark:bg-transparent font-bold focus:outline-none flex items-center gap-2">
+            <ChevronLeftIcon className="w-4 h-4" />
+            Previous
+          </span>
         </motion.button>
 
-        {/* Page numbers */}
-        <div className="flex items-center gap-1">
-          {getVisiblePages().map((page, index) => (
-            <motion.button
-              key={index}
-              onClick={() => typeof page === "number" && onPageChange(page)}
-              disabled={page === "..." || page === currentPage}
-              className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                page === currentPage
-                  ? "bg-white text-black"
-                  : page === "..."
-                  ? "text-gray-500 cursor-default"
-                  : "text-gray-300 bg-gray-800/50 hover:bg-gray-700/50"
-              }`}
-              whileHover={
-                typeof page === "number" && page !== currentPage
-                  ? { scale: 1.1 }
-                  : {}
-              }
-              whileTap={
-                typeof page === "number" && page !== currentPage
-                  ? { scale: 0.95 }
-                  : {}
-              }
-            >
-              {page}
-            </motion.button>
-          ))}
+        {/* Page indicator */}
+        <div className="flex items-center px-4 py-2 text-sm font-medium text-text-primary bg-surface-hover rounded-full">
+          Page {currentPage} of {totalPages}
         </div>
 
         {/* Next button */}
         <motion.button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-300 bg-gray-800/50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-700/50 transition-colors"
+          className="relative inline-flex cursor-pointer items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-full group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 dark:text-white dark:hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
           whileHover={currentPage < totalPages ? { scale: 1.05 } : {}}
           whileTap={currentPage < totalPages ? { scale: 0.95 } : {}}
         >
-          Next
-          <ChevronRightIcon className="w-4 h-4" />
+          <span className="relative px-4 py-2 transition-all ease-in duration-75 bg-surface rounded-full group-hover:bg-transparent group-hover:dark:bg-transparent font-bold focus:outline-none flex items-center gap-2">
+            Next
+            <ChevronRightIcon className="w-4 h-4" />
+          </span>
         </motion.button>
       </div>
     </div>
