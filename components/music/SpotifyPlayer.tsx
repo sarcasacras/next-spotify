@@ -21,6 +21,7 @@ export default function SpotifyPlayer() {
     previousTrack,
     seek,
     setVolume,
+    allLikedTracks,
   } = useSpotifyPlayer();
   
   const { toggleLikedTrackMutation, isTrackLiked } = useSearch();
@@ -45,6 +46,7 @@ export default function SpotifyPlayer() {
       return () => clearInterval(interval);
     }
   }, [is_paused, isDragging, duration]);
+
 
   // Initialize volume slider gradient on mount and volume changes
   useLayoutEffect(() => {

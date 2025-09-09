@@ -8,6 +8,7 @@ import React, {
   ReactNode,
 } from "react";
 import { useSession } from "next-auth/react";
+import type { SpotifyTrack, SpotifySavedTrack } from "@/types/spotify";
 
 declare global {
   interface Window {
@@ -31,6 +32,7 @@ interface SpotifyPlayerState {
   position: number;
   duration: number;
   volume: number;
+  allLikedTracks: SpotifyTrack[];
 }
 
 interface SpotifyPlayerContextType extends SpotifyPlayerState {
@@ -42,6 +44,7 @@ interface SpotifyPlayerContextType extends SpotifyPlayerState {
   previousTrack: () => void;
   seek: (position: number) => void;
   setVolume: (volume: number) => void;
+  setAllLikedTracks: (tracks: SpotifyTrack[]) => void;
 }
 
 const SpotifyPlayerContext = createContext<SpotifyPlayerContextType | null>(
@@ -50,10 +53,12 @@ const SpotifyPlayerContext = createContext<SpotifyPlayerContextType | null>(
 
 interface SpotifyPlayerProviderProps {
   children: ReactNode;
+  initialLikedTracks?: SpotifySavedTrack[];
 }
 
 export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
   children,
+  initialLikedTracks = [],
 }) => {
   const { data: session } = useSession();
   const [state, setState] = useState<SpotifyPlayerState>({
@@ -65,6 +70,7 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
     position: 0,
     duration: 0,
     volume: 0.5,
+    allLikedTracks: [],
   });
 
   const initializePlayer = () => {
@@ -183,6 +189,18 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
     setState((prev) => ({ ...prev, volume }));
   };
 
+  const setAllLikedTracks = (tracks: SpotifyTrack[]) => {
+    setState((prev) => ({ ...prev, allLikedTracks: tracks }));
+  };
+
+  // Update allLikedTracks when initialLikedTracks changes
+  useEffect(() => {
+    if (initialLikedTracks.length > 0) {
+      const tracks = initialLikedTracks.map(item => item.track);
+      setAllLikedTracks(tracks);
+    }
+  }, [initialLikedTracks]);
+
   useEffect(() => {
     console.log(
       "Effect triggered. Session:",
@@ -210,6 +228,7 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
     previousTrack,
     seek,
     setVolume,
+    setAllLikedTracks,
   };
 
   return (

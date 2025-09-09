@@ -8,8 +8,9 @@ import { useSession } from "next-auth/react";
 import { SpotifyPlayerProvider } from "@/contexts/SpotifyPlayerContext";
 import { SearchProvider } from "@/contexts/SearchContext";
 import { getAllUserLikedTracks } from "@/lib/spotify";
+import type { SpotifySavedTrack } from "@/types/spotify";
 
-function SearchWrapper({ children }: { children: React.ReactNode }) {
+function ContextWrapper({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
   
   const { data: likedTracksData } = useQuery({
@@ -20,10 +21,14 @@ function SearchWrapper({ children }: { children: React.ReactNode }) {
     gcTime: 10 * 60 * 1000, // 10 minutes - keep in cache longer
   });
 
+  const tracks: SpotifySavedTrack[] = likedTracksData?.items || [];
+
   return (
-    <SearchProvider likedTracks={likedTracksData?.items || []}>
-      {children}
-    </SearchProvider>
+    <SpotifyPlayerProvider initialLikedTracks={tracks}>
+      <SearchProvider likedTracks={tracks}>
+        {children}
+      </SearchProvider>
+    </SpotifyPlayerProvider>
   );
 }
 
@@ -43,9 +48,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
       <QueryClientProvider client={queryClient}>
-        <SpotifyPlayerProvider>
-          <SearchWrapper>{children}</SearchWrapper>
-        </SpotifyPlayerProvider>
+        <ContextWrapper>{children}</ContextWrapper>
       </QueryClientProvider>
     </SessionProvider>
   );
