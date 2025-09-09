@@ -20,7 +20,7 @@ export default function AlbumGrid({ albums, likedTracks }: AlbumGridProps) {
   const previousAlbumsRef = useRef<Set<string>>(new Set());
   const isInitialLoadRef = useRef(true);
 
-  const ALBUMS_PER_PAGE = 24;
+  const ALBUMS_PER_PAGE = 18;
 
   // Calculate pagination values
   const totalPages = Math.ceil(albums.length / ALBUMS_PER_PAGE);
