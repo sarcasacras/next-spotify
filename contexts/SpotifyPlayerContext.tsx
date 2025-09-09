@@ -88,7 +88,17 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
     const player = new window.Spotify.Player({
       name: "Next Spotify Player",
       getOAuthToken: (callback: (token: string) => void) => {
-        callback(session.accessToken as string);
+        // Always get the current session to avoid stale token issues
+        import("next-auth/react").then(({ getSession }) => {
+          getSession().then((currentSession) => {
+            if (currentSession?.accessToken) {
+              console.log("🔑 [TOKEN] Providing fresh token to Spotify SDK:", currentSession.accessToken.slice(0, 20) + "...");
+              callback(currentSession.accessToken as string);
+            } else {
+              console.error("🔑 [TOKEN] No access token available in current session");
+            }
+          });
+        });
       },
       volume: 0.5,
     });
@@ -113,6 +123,46 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
         position: state.position,
         duration: state.duration,
       }));
+    });
+
+    // Handle authentication errors and auto-reconnect
+    player.addListener("authentication_error", ({ message }: { message: string }) => {
+      console.error("🔒 [AUTH ERROR] Authentication failed:", message);
+      console.log("🔄 [AUTH ERROR] Attempting to reconnect with fresh token...");
+      
+      // Disconnect current player and reinitialize
+      player.disconnect();
+      setTimeout(() => {
+        initializePlayer();
+      }, 1000); // Brief delay to ensure clean disconnection
+    });
+
+    // Handle initialization errors
+    player.addListener("initialization_error", ({ message }: { message: string }) => {
+      console.error("🚫 [INIT ERROR] Player initialization failed:", message);
+    });
+
+    // Handle account errors (like premium subscription issues)
+    player.addListener("account_error", ({ message }: { message: string }) => {
+      console.error("👤 [ACCOUNT ERROR] Account issue:", message);
+    });
+
+    // Handle playback errors
+    player.addListener("playback_error", ({ message }: { message: string }) => {
+      console.error("▶️ [PLAYBACK ERROR] Playback failed:", message);
+      
+      // Handle specific "no list was loaded" error
+      if (message.includes("no list was loaded")) {
+        console.log("🎵 [PLAYBACK ERROR] Player has no active queue. This may happen during reconnection.");
+        // Clear current track state to prevent further operations
+        setState((prev) => ({
+          ...prev,
+          current_track: null,
+          is_paused: true,
+          position: 0,
+          duration: 0,
+        }));
+      }
     });
 
     player.connect();
@@ -164,27 +214,42 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
   };
 
   const togglePlayPause = () => {
-    if (!state.player) return;
+    if (!state.player || !state.device_id || !state.current_track) {
+      console.warn("🚫 [CONTROL] Cannot toggle play/pause - player not ready or no track loaded");
+      return;
+    }
     state.player.togglePlay();
   };
 
   const nextTrack = () => {
-    if (!state.player) return;
+    if (!state.player || !state.device_id || !state.current_track) {
+      console.warn("🚫 [CONTROL] Cannot skip to next track - player not ready or no track loaded");
+      return;
+    }
     state.player.nextTrack();
   };
 
   const previousTrack = () => {
-    if (!state.player) return;
+    if (!state.player || !state.device_id || !state.current_track) {
+      console.warn("🚫 [CONTROL] Cannot skip to previous track - player not ready or no track loaded");
+      return;
+    }
     state.player.previousTrack();
   };
 
   const seek = (position: number) => {
-    if (!state.player) return;
+    if (!state.player || !state.device_id || !state.current_track) {
+      console.warn("🚫 [CONTROL] Cannot seek - player not ready or no track loaded");
+      return;
+    }
     state.player.seek(position);
   };
 
   const setVolume = (volume: number) => {
-    if (!state.player) return;
+    if (!state.player || !state.device_id) {
+      console.warn("🚫 [CONTROL] Cannot set volume - player not ready");
+      return;
+    }
     state.player.setVolume(volume);
     setState((prev) => ({ ...prev, volume }));
   };
@@ -202,20 +267,36 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
   }, [initialLikedTracks]);
 
   useEffect(() => {
+    console.log("🔄 [EFFECT] Session token changed:", session?.accessToken?.slice(0, 20) + "...");
     console.log(
-      "Effect triggered. Session:",
+      "🔄 [EFFECT] Session exists:",
       !!session?.accessToken,
-      "Spotify SDK:",
+      "Spotify SDK loaded:",
       !!window.Spotify
     );
 
     if (session?.accessToken && window.Spotify) {
+      console.log("🎵 [EFFECT] Creating new player with fresh token");
       initializePlayer();
     } else if (session?.accessToken) {
-      console.log("Setting up SDK ready callback...");
+      console.log("🎵 [EFFECT] Setting up SDK ready callback...");
       // Wait for SDK to load
       window.onSpotifyWebPlaybackSDKReady = initializePlayer;
     }
+
+    // Cleanup function: Disconnect old player when token changes or component unmounts
+    return () => {
+      if (state.player) {
+        console.log("🧹 [CLEANUP] Disconnecting old player");
+        state.player.disconnect();
+        setState((prev) => ({ 
+          ...prev, 
+          player: null, 
+          device_id: null, 
+          is_active: false 
+        }));
+      }
+    };
   }, [session?.accessToken]);
 
   const contextValue: SpotifyPlayerContextType = {

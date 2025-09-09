@@ -7,6 +7,7 @@ import AlbumGrid from "@/components/music/AlbumGrid";
 import { extractUniqueAlbums } from "@/lib/album-utils";
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "@/components/ui/Spinner";
+import LandingPage from "@/components/landing/LandingPage";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -26,13 +27,7 @@ export default function Home() {
   const albums: SpotifyAlbum[] = tracks ? extractUniqueAlbums(tracks) : [];
 
   if (!session?.accessToken) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <p className="text-gray-400">
-          Please sign in to view your music library
-        </p>
-      </div>
-    );
+    return <LandingPage />;
   }
 
   return (
