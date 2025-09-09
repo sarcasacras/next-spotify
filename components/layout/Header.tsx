@@ -147,7 +147,7 @@ export default function Header() {
                 disabled={isSigningOut}
                 className="relative inline-flex cursor-pointer items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-full group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 dark:text-white dark:hover:text-gray-900 disabled:opacity-75 disabled:cursor-not-allowed"
               >
-                <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-surface rounded-full group-hover:bg-transparent group-hover:dark:bg-transparent font-bold focus:outline-none flex items-center justify-center w-[100px] h-[44px]">
+                <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-surface rounded-full group-hover:bg-transparent group-hover:dark:bg-transparent font-bold focus:outline-none flex items-center justify-center w-[100px] h-[35px]">
                   {isSigningOut ? (
                     <Spinner size="sm" className="text-white" />
                   ) : (
@@ -169,7 +169,7 @@ export default function Header() {
               disabled={isSigningIn}
               className="relative inline-flex cursor-pointer items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-full group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 dark:text-white dark:hover:text-gray-900 disabled:opacity-75 disabled:cursor-not-allowed"
             >
-              <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-surface rounded-full group-hover:bg-transparent group-hover:dark:bg-transparent font-bold focus:outline-none flex items-center justify-center w-[100px] h-[44px]">
+              <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-surface rounded-full group-hover:bg-transparent group-hover:dark:bg-transparent font-bold focus:outline-none flex items-center justify-center w-[100px] h-[35px]">
                 {isSigningIn ? (
                   <Spinner size="sm" className="text-white" />
                 ) : (

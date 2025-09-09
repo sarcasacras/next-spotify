@@ -54,13 +54,12 @@ export default function Pagination({
         >
           <span className="relative px-4 py-2 transition-all ease-in duration-75 bg-surface rounded-full group-hover:bg-transparent group-hover:dark:bg-transparent font-bold focus:outline-none flex items-center gap-2">
             <ChevronLeftIcon className="w-4 h-4" />
-            Previous
           </span>
         </motion.button>
 
         {/* Page indicator */}
         <div className="flex items-center px-4 py-2 text-sm font-medium text-text-primary bg-surface-hover rounded-full">
-          Page {currentPage} of {totalPages}
+          {currentPage} of {totalPages}
         </div>
 
         {/* Next button */}
@@ -72,7 +71,6 @@ export default function Pagination({
           whileTap={currentPage < totalPages ? { scale: 0.95 } : {}}
         >
           <span className="relative px-4 py-2 transition-all ease-in duration-75 bg-surface rounded-full group-hover:bg-transparent group-hover:dark:bg-transparent font-bold focus:outline-none flex items-center gap-2">
-            Next
             <ChevronRightIcon className="w-4 h-4" />
           </span>
         </motion.button>

@@ -44,39 +44,6 @@ export default function SearchTrackItem({
       onClick={handlePlay}
     >
       <div className="flex items-center px-3 py-3 w-full">
-        {/* Play/Playing indicator */}
-        {isCurrentTrack && (
-          <div className="mr-3 flex items-center justify-center">
-            {is_paused ? (
-              <svg
-                className="w-4 h-4 text-pink-500"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            ) : (
-              <div className="flex space-x-1">
-                <div
-                  className="w-1 h-4 bg-pink-500 animate-pulse"
-                  style={{ animationDelay: "0ms" }}
-                />
-                <div
-                  className="w-1 h-4 bg-pink-500 animate-pulse"
-                  style={{ animationDelay: "150ms" }}
-                />
-                <div
-                  className="w-1 h-4 bg-pink-500 animate-pulse"
-                  style={{ animationDelay: "300ms" }}
-                />
-              </div>
-            )}
-          </div>
-        )}
 
         {/* Track info */}
         <div className="flex-1 min-w-0">

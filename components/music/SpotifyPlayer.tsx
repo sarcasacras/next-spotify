@@ -23,7 +23,7 @@ export default function SpotifyPlayer() {
     setVolume,
     allLikedTracks,
   } = useSpotifyPlayer();
-  
+
   const { toggleLikedTrackMutation, isTrackLiked } = useSearch();
 
   const [localPosition, setLocalPosition] = useState(position);
@@ -47,11 +47,10 @@ export default function SpotifyPlayer() {
     }
   }, [is_paused, isDragging, duration]);
 
-
   // Initialize volume slider gradient on mount and volume changes
   useLayoutEffect(() => {
     if (volumeSliderRef.current) {
-      volumeSliderRef.current.style.setProperty('--value', `${volume * 100}%`);
+      volumeSliderRef.current.style.setProperty("--value", `${volume * 100}%`);
     }
   }, [volume]);
 
@@ -67,7 +66,7 @@ export default function SpotifyPlayer() {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
     // Update CSS custom property for gradient fill
-    e.target.style.setProperty('--value', `${newVolume * 100}%`);
+    e.target.style.setProperty("--value", `${newVolume * 100}%`);
   };
 
   const handleLikeToggle = async (trackId: string, currentlyLiked: boolean) => {
@@ -127,7 +126,7 @@ export default function SpotifyPlayer() {
                 : "Choose a track to play"}
             </p>
           </div>
-          
+
           {/* Like button for current track */}
           {current_track && (
             <div className="ml-2">
@@ -155,7 +154,11 @@ export default function SpotifyPlayer() {
                   : "text-secondary cursor-not-allowed"
               }`}
             >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <svg
+                className="w-5 h-5 cursor-pointer"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
                 <path
                   fillRule="evenodd"
                   d="M15.707 15.707a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 010 1.414zm-6 0a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 1.414L5.414 10l4.293 4.293a1 1 0 010 1.414z"
@@ -173,11 +176,13 @@ export default function SpotifyPlayer() {
                   : "bg-surface-hover cursor-not-allowed"
               }`}
             >
-              <span className={`relative p-2 transition-all ease-in duration-75 rounded-full font-bold focus:outline-none ${
-                current_track 
-                  ? "bg-surface group-hover:bg-transparent text-text-primary" 
-                  : "bg-surface text-secondary"
-              }`}>
+              <span
+                className={`relative p-2 transition-all ease-in duration-75 rounded-full font-bold focus:outline-none ${
+                  current_track
+                    ? "bg-surface group-hover:bg-transparent text-text-primary"
+                    : "bg-surface text-secondary"
+                }`}
+              >
                 <AnimatePresence mode="wait">
                   {is_paused ? (
                     <motion.svg
@@ -188,9 +193,9 @@ export default function SpotifyPlayer() {
                       initial={{ scale: 0.6, rotate: -90, opacity: 0 }}
                       animate={{ scale: 1, rotate: 0, opacity: 1 }}
                       exit={{ scale: 0.6, rotate: 90, opacity: 0 }}
-                      transition={{ 
-                        duration: 0.3, 
-                        ease: [0.23, 1, 0.320, 1]
+                      transition={{
+                        duration: 0.3,
+                        ease: [0.23, 1, 0.32, 1],
                       }}
                     >
                       <path d="M8 5v14l11-7z" />
@@ -204,9 +209,9 @@ export default function SpotifyPlayer() {
                       initial={{ scale: 0.6, rotate: -90, opacity: 0 }}
                       animate={{ scale: 1, rotate: 0, opacity: 1 }}
                       exit={{ scale: 0.6, rotate: 90, opacity: 0 }}
-                      transition={{ 
-                        duration: 0.3, 
-                        ease: [0.23, 1, 0.320, 1]
+                      transition={{
+                        duration: 0.3,
+                        ease: [0.23, 1, 0.32, 1],
                       }}
                     >
                       <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
@@ -227,7 +232,11 @@ export default function SpotifyPlayer() {
                   : "text-secondary cursor-not-allowed"
               }`}
             >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <svg
+                className="w-5 h-5 cursor-pointer"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
                 <path
                   fillRule="evenodd"
                   d="M4.293 4.293a1 1 0 011.414 0l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414zm6 0a1 1 0 011.414 0l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414-1.414L14.586 10l-4.293-4.293a1 1 0 010-1.414z"
@@ -278,7 +287,7 @@ export default function SpotifyPlayer() {
               step="0.01"
               value={volume}
               onChange={handleVolumeChange}
-              style={{ '--value': `${volume * 100}%` } as React.CSSProperties}
+              style={{ "--value": `${volume * 100}%` } as React.CSSProperties}
               className="w-full h-1 bg-surface-hover rounded-lg appearance-none cursor-pointer slider"
             />
           </div>

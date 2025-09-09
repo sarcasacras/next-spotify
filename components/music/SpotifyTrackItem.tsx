@@ -94,38 +94,6 @@ export default function SpotifyTrackItem({
       onClick={handlePlay}
     >
       <div className="flex items-center px-4 py-4 w-full">
-        {isCurrentTrack && (
-          <div className="mr-4 flex items-center justify-center">
-            {is_paused ? (
-              <svg
-                className="w-4 h-4 text-pink-500"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            ) : (
-              <div className="flex space-x-1">
-                <div
-                  className="w-1 h-4 bg-pink-500 animate-pulse"
-                  style={{ animationDelay: "0ms" }}
-                />
-                <div
-                  className="w-1 h-4 bg-pink-500 animate-pulse"
-                  style={{ animationDelay: "150ms" }}
-                />
-                <div
-                  className="w-1 h-4 bg-pink-500 animate-pulse"
-                  style={{ animationDelay: "300ms" }}
-                />
-              </div>
-            )}
-          </div>
-        )}
         <span
           className={`flex-1 ${
             isCurrentTrack ? "text-pink-400 font-medium" : ""

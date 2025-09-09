@@ -6,6 +6,7 @@ import { SpotifyAlbum } from "@/types/spotify";
 import AlbumGrid from "@/components/music/AlbumGrid";
 import { extractUniqueAlbums } from "@/lib/album-utils";
 import { useQuery } from "@tanstack/react-query";
+import Spinner from "@/components/ui/Spinner";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -37,7 +38,11 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white pb-24">
       <main className="p-8">
-        {isLoading && <p className="text-gray-400">Loading your music...</p>}
+        {isLoading && (
+          <div className="flex items-center justify-center min-h-[50vh]">
+            <Spinner size="lg" className="text-pink-500 w-12 h-12" />
+          </div>
+        )}
 
         {error && (
           <p className="text-red-400">
