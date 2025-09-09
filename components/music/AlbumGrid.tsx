@@ -3,6 +3,7 @@ import { getTracksForAlbum } from "@/lib/album-utils";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import AlbumModal from "./AlbumModal";
+import Pagination from "@/components/ui/Pagination";
 import { motion, AnimatePresence } from "motion/react";
 
 
@@ -15,8 +16,24 @@ export default function AlbumGrid({ albums, likedTracks }: AlbumGridProps) {
   const [selectedAlbum, setSelectedAlbum] = useState<SpotifyAlbum | null>(null);
   const [closingAlbum, setClosingAlbum] = useState<SpotifyAlbum | null>(null);
   const [newAlbumIds, setNewAlbumIds] = useState<Set<string>>(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
   const previousAlbumsRef = useRef<Set<string>>(new Set());
   const isInitialLoadRef = useRef(true);
+
+  const ALBUMS_PER_PAGE = 24;
+
+  // Calculate pagination values
+  const totalPages = Math.ceil(albums.length / ALBUMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ALBUMS_PER_PAGE;
+  const endIndex = startIndex + ALBUMS_PER_PAGE;
+  const currentPageAlbums = albums.slice(startIndex, endIndex);
+
+  // Reset to page 1 when albums change (new data loaded)
+  useEffect(() => {
+    if (albums.length > 0 && currentPage > totalPages) {
+      setCurrentPage(1);
+    }
+  }, [albums.length, currentPage, totalPages]);
 
   // Track newly added albums for special animation treatment
   useEffect(() => {
@@ -54,9 +71,16 @@ export default function AlbumGrid({ albums, likedTracks }: AlbumGridProps) {
     setTimeout(() => setClosingAlbum(null), 300);
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top of grid when changing pages
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-      {albums.map((album, index) => {
+    <div>
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+        {currentPageAlbums.map((album, index) => {
         const isNew = newAlbumIds.has(album.id);
         
         return (
@@ -142,7 +166,15 @@ export default function AlbumGrid({ albums, likedTracks }: AlbumGridProps) {
               </motion.div>
           </motion.div>
         );
-      })}
+        })}
+      </div>
+
+      {/* Pagination Component */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
       
       <AnimatePresence>
         {selectedAlbum && (

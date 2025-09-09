@@ -36,9 +36,45 @@ export async function spotifyFetch(endpoint: string, accessToken: string) {
 }
 
 export async function getUserLikedTracks(
+  accessToken: string,
+  limit: number = 50,
+  offset: number = 0
+): Promise<SpotifyLikedTracksResponse> {
+  return spotifyFetch(`/me/tracks?limit=${limit}&offset=${offset}`, accessToken);
+}
+
+export async function getAllUserLikedTracks(
   accessToken: string
 ): Promise<SpotifyLikedTracksResponse> {
-  return spotifyFetch("/me/tracks", accessToken);
+  const allTracks: any[] = [];
+  let hasMore = true;
+  let offset = 0;
+  const limit = 50; // Spotify's maximum limit per request
+  
+  while (hasMore) {
+    const response: SpotifyLikedTracksResponse = await getUserLikedTracks(
+      accessToken,
+      limit,
+      offset
+    );
+    
+    allTracks.push(...response.items);
+    
+    // Check if there are more tracks to fetch
+    hasMore = response.items.length === limit && response.next !== null;
+    offset += limit;
+  }
+  
+  // Return the same structure as a single response but with all items
+  const firstResponse = await getUserLikedTracks(accessToken, limit, 0);
+  return {
+    ...firstResponse,
+    items: allTracks,
+    total: allTracks.length,
+    next: null, // No more pages since we fetched everything
+    offset: 0,
+    limit: allTracks.length
+  };
 }
 
 export async function getUserProfile(accessToken: string) {

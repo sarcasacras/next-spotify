@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { getUserLikedTracks } from "@/lib/spotify";
+import { getAllUserLikedTracks } from "@/lib/spotify";
 import { SpotifyAlbum } from "@/types/spotify";
 import AlbumGrid from "@/components/music/AlbumGrid";
 import { extractUniqueAlbums } from "@/lib/album-utils";
@@ -15,9 +15,11 @@ export default function Home() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["likedTracks", session?.accessToken],
-    queryFn: () => getUserLikedTracks(session!.accessToken as string),
+    queryKey: ["allLikedTracks", session?.accessToken],
+    queryFn: () => getAllUserLikedTracks(session!.accessToken as string),
     enabled: !!session?.accessToken,
+    staleTime: 5 * 60 * 1000, // 5 minutes - cache longer since we're fetching all tracks
+    gcTime: 10 * 60 * 1000, // 10 minutes - keep in cache longer
   });
 
   const albums: SpotifyAlbum[] = tracks ? extractUniqueAlbums(tracks) : [];
