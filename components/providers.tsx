@@ -7,15 +7,17 @@ import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { SpotifyPlayerProvider } from "@/contexts/SpotifyPlayerContext";
 import { SearchProvider } from "@/contexts/SearchContext";
-import { getUserLikedTracks } from "@/lib/spotify";
+import { getAllUserLikedTracks } from "@/lib/spotify";
 
 function SearchWrapper({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
   
   const { data: likedTracksData } = useQuery({
-    queryKey: ["likedTracks", session?.accessToken],
-    queryFn: () => getUserLikedTracks(session!.accessToken as string),
+    queryKey: ["allLikedTracks", session?.accessToken],
+    queryFn: () => getAllUserLikedTracks(session!.accessToken as string),
     enabled: !!session?.accessToken,
+    staleTime: 5 * 60 * 1000, // 5 minutes - cache longer since we're fetching all tracks
+    gcTime: 10 * 60 * 1000, // 10 minutes - keep in cache longer
   });
 
   return (
