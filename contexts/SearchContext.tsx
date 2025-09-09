@@ -106,7 +106,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
       
       // Invalidate the main liked tracks query to trigger immediate UI update
       await queryClient.invalidateQueries({ 
-        queryKey: ["likedTracks", session.accessToken] 
+        queryKey: ["allLikedTracks", session.accessToken] 
       });
     } catch (error) {
       console.error('Error saving track:', error);
@@ -127,7 +127,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
       
       // Invalidate the main liked tracks query to trigger immediate UI update
       await queryClient.invalidateQueries({ 
-        queryKey: ["likedTracks", session.accessToken] 
+        queryKey: ["allLikedTracks", session.accessToken] 
       });
     } catch (error) {
       console.error('Error removing track:', error);
