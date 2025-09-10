@@ -88,7 +88,6 @@ export default function SpotifyPlayer() {
       className="fixed bottom-0 left-0 right-0 bg-surface border-t border-border p-4 z-50"
     >
       <div className="max-w-screen-xl mx-auto flex items-center justify-between">
-        {/* Track Info */}
         <div className="flex items-center space-x-4 flex-1 min-w-0">
           <div className="relative w-14 h-14 flex-shrink-0">
             {current_track ? (
@@ -127,7 +126,6 @@ export default function SpotifyPlayer() {
             </p>
           </div>
 
-          {/* Like button for current track */}
           {current_track && (
             <div className="ml-2">
               <LikeButton
@@ -140,7 +138,6 @@ export default function SpotifyPlayer() {
           )}
         </div>
 
-        {/* Player Controls */}
         <div className="flex flex-col items-center space-y-2 flex-1 max-w-md">
           <div className="flex items-center space-x-4">
             <motion.button
@@ -246,7 +243,6 @@ export default function SpotifyPlayer() {
             </motion.button>
           </div>
 
-          {/* Progress Bar */}
           <div className="flex items-center space-x-2 w-full">
             <span className="text-xs text-text-secondary w-12 text-right">
               {convertToMinutes(localPosition)}
@@ -268,7 +264,6 @@ export default function SpotifyPlayer() {
           </div>
         </div>
 
-        {/* Volume Control */}
         <div className="flex items-center space-x-2 flex-1 justify-end">
           <svg
             className="w-5 h-5 text-text-secondary"

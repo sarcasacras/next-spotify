@@ -34,7 +34,6 @@ export default function LikeButton({
       // Keep animation state for visual feedback duration
       setTimeout(() => setIsAnimating(false), 1500);
     } catch (error) {
-      console.error("Error toggling track like:", error);
       setIsAnimating(false);
     }
   };
@@ -68,7 +67,6 @@ export default function LikeButton({
       transition={{ duration: 0.3, ease: "backOut" }}
       disabled={disabled || isAnimating}
     >
-      {/* Sparkle effect for successful like */}
       {isAnimating && !wasInitiallyLiked && (
         <>
           {[...Array(4)].map((_, i) => (
@@ -101,7 +99,6 @@ export default function LikeButton({
         </>
       )}
 
-      {/* Pulse effect for unlike */}
       {isAnimating && wasInitiallyLiked && (
         <motion.div
           className="absolute inset-0 bg-red-500/20 rounded-full"

@@ -45,7 +45,6 @@ export default function SearchTrackItem({
     >
       <div className="flex items-center px-3 py-3 w-full">
 
-        {/* Track info */}
         <div className="flex-1 min-w-0">
           <span
             className={`block font-medium truncate ${
@@ -63,7 +62,6 @@ export default function SearchTrackItem({
           </span>
         </div>
 
-        {/* Duration */}
         <span 
           className={`px-3 text-sm ${
             isCurrentTrack ? "text-pink-400" : "text-text-secondary"
@@ -72,7 +70,6 @@ export default function SearchTrackItem({
           {convertToMinutes(track.duration_ms)}
         </span>
 
-        {/* Like button (only for Spotify search results) */}
         {!isFromLibrary && (
           <LikeButton
             trackId={track.id}

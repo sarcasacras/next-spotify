@@ -63,13 +63,11 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
 
   const debouncedQuery = useDebounce(query, 300);
 
-  // Update liked track IDs when likedTracks changes
   useEffect(() => {
     const ids = new Set(likedTracks.map(({ track }) => track.id));
     setLikedTrackIds(ids);
   }, [likedTracks]);
 
-  // Spotify search query
   const { 
     data: spotifySearchResults, 
     isLoading: isSpotifyLoading 
@@ -80,7 +78,6 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // Library search (client-side filtering)
   const librarySearchResults = React.useMemo(() => {
     if (searchMode === 'library' && debouncedQuery) {
       return searchUserLibrary(debouncedQuery, likedTracks);
@@ -88,7 +85,6 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
     return [];
   }, [debouncedQuery, searchMode, likedTracks]);
 
-  // Combine results based on search mode
   const searchResults = React.useMemo(() => {
     if (searchMode === 'library') {
       return librarySearchResults;
@@ -99,7 +95,6 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
 
   const isLoading = searchMode === 'spotify' ? isSpotifyLoading : false;
 
-  // Save liked track function
   const saveLikedTrackMutation = useCallback(async (trackId: string) => {
     if (!session?.accessToken) return;
     
@@ -107,24 +102,20 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
       await saveLikedTrack(trackId, session.accessToken as string);
       setLikedTrackIds(prev => new Set([...prev, trackId]));
       
-      // Invalidate the main liked tracks query to trigger immediate UI update
       await queryClient.invalidateQueries({ 
         queryKey: ["allLikedTracks", session.accessToken] 
       });
       
-      // Show success notification
       showSuccessNotification(
         "Track Saved",
         "Track added to your liked songs!",
         addNotification
       );
     } catch (error) {
-      console.error('Error saving track:', error);
       showErrorNotification(error as any, addNotification);
     }
   }, [session?.accessToken, queryClient, addNotification]);
 
-  // Remove liked track function
   const removeLikedTrackMutation = useCallback(async (trackId: string) => {
     if (!session?.accessToken) return;
     
@@ -136,24 +127,20 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
         return newSet;
       });
       
-      // Invalidate the main liked tracks query to trigger immediate UI update
       await queryClient.invalidateQueries({ 
         queryKey: ["allLikedTracks", session.accessToken] 
       });
       
-      // Show success notification
       showSuccessNotification(
         "Track Removed",
         "Track removed from your liked songs!",
         addNotification
       );
     } catch (error) {
-      console.error('Error removing track:', error);
       showErrorNotification(error as any, addNotification);
     }
   }, [session?.accessToken, queryClient, addNotification]);
 
-  // Toggle liked track function (for convenience)
   const toggleLikedTrackMutation = useCallback(async (trackId: string, currentlyLiked: boolean) => {
     if (currentlyLiked) {
       await removeLikedTrackMutation(trackId);
@@ -162,7 +149,6 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
     }
   }, [saveLikedTrackMutation, removeLikedTrackMutation]);
 
-  // Check if track is liked
   const isTrackLiked = useCallback((trackId: string) => {
     return likedTrackIds.has(trackId);
   }, [likedTrackIds]);

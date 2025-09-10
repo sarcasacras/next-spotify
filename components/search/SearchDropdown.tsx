@@ -27,13 +27,11 @@ export default function SearchDropdown({ isOpen, onClose }: SearchDropdownProps)
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
           <div
             className="fixed inset-0 bg-transparent z-40"
             onClick={onClose}
           />
 
-          {/* Dropdown */}
           <motion.div
             className="absolute top-full left-0 right-0 mt-2 bg-surface border border-border rounded-xl shadow-2xl z-50 max-h-96 overflow-hidden"
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -41,10 +39,8 @@ export default function SearchDropdown({ isOpen, onClose }: SearchDropdownProps)
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
           >
-            {/* Search Mode Toggle */}
             <div className="border-b border-border p-4">
               <div className="relative flex bg-surface-hover rounded-lg p-1">
-                {/* Animated sliding indicator */}
                 <motion.div
                   className="absolute inset-y-0 bg-gradient-to-r from-pink-500 to-orange-400 rounded-lg shadow-sm"
                   layoutId="search-mode-indicator"
@@ -94,7 +90,6 @@ export default function SearchDropdown({ isOpen, onClose }: SearchDropdownProps)
               </div>
             </div>
 
-            {/* Results */}
             <div className="max-h-80 overflow-y-auto no-scrollbar">
               <AnimatePresence mode="wait">
                 {isLoading ? (
@@ -190,7 +185,6 @@ export default function SearchDropdown({ isOpen, onClose }: SearchDropdownProps)
               </AnimatePresence>
             </div>
 
-            {/* Footer info */}
             <div className="border-t border-border px-3 py-2 bg-surface-hover">
               <p className="text-xs text-text-secondary text-center">
                 {searchMode === 'library' 

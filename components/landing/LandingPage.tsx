@@ -17,18 +17,15 @@ export default function LandingPage() {
   
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden relative">
-      {/* Global Gradient Background */}
       <motion.div 
         className="fixed inset-0 bg-gradient-to-b from-black to-gray-900 pointer-events-none z-0"
         style={{ opacity: gradientOpacity }}
       />
       
-      {/* Floating Background Elements */}
       <motion.div 
         className="fixed inset-0 pointer-events-none z-10"
         style={{ y: backgroundY }}
       >
-        {/* Gradient Orbs */}
         <motion.div 
           className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-pink-500/30 to-purple-500/40 rounded-full blur-3xl"
           animate={{ 
@@ -68,7 +65,6 @@ export default function LandingPage() {
           }}
         />
         
-        {/* Floating Musical Notes */}
         <motion.div 
           className="absolute top-1/4 left-1/4 text-pink-500/30 text-2xl"
           animate={{ 
@@ -123,13 +119,11 @@ export default function LandingPage() {
         >♫</motion.div>
       </motion.div>
 
-      {/* Hero Section */}
       <motion.section 
         className="relative min-h-screen flex items-center justify-center px-6 z-20"
         style={{ y: heroY }}
       >
         <div className="text-center max-w-4xl mx-auto">
-          {/* Main Title */}
           <motion.h1 
             className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent leading-tight"
             initial={{ opacity: 0, y: 50 }}
@@ -141,7 +135,6 @@ export default function LandingPage() {
             Reimagined
           </motion.h1>
           
-          {/* Tagline */}
           <motion.p 
             className="text-xl md:text-2xl text-gray-300 mb-4 leading-relaxed"
             initial={{ opacity: 0, y: 30 }}
@@ -151,7 +144,6 @@ export default function LandingPage() {
             Your Spotify library organized in a beautiful album-cover grid
           </motion.p>
           
-          {/* Sign In Call to Action */}
           <motion.div 
             className="flex flex-col gap-6 justify-center items-center"
             initial={{ opacity: 0, y: 20 }}
@@ -199,7 +191,6 @@ export default function LandingPage() {
         </div>
       </motion.section>
 
-      {/* Product Showcase Section */}
       <motion.section 
         className="relative py-20 px-6 z-20"
         initial={{ opacity: 0 }}
@@ -208,7 +199,6 @@ export default function LandingPage() {
         transition={{ duration: 0.8 }}
       >
         <div className="max-w-7xl mx-auto">
-          {/* Hero Product Image */}
           <div className="text-center mb-20">
             <motion.h2 
               className="text-3xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent py-2"
@@ -229,7 +219,6 @@ export default function LandingPage() {
               Experience your Spotify library like never before. Every album cover becomes a gateway to your favorite music.
             </motion.p>
             
-            {/* Main Hero Screenshot */}
             <motion.div 
               className="relative group max-w-5xl mx-auto"
               initial={{ opacity: 0, y: 50, scale: 0.9 }}
@@ -248,9 +237,7 @@ export default function LandingPage() {
             </motion.div>
           </div>
 
-          {/* Feature Grid */}
           <div className="grid md:grid-cols-2 gap-16 items-center">
-            {/* Album Modal Feature */}
             <motion.div 
               className="order-2 md:order-1"
               initial={{ opacity: 0, x: -50 }}
@@ -321,7 +308,6 @@ export default function LandingPage() {
               </motion.div>
             </motion.div>
 
-            {/* Search Functionality Section */}
             <motion.div 
               className="order-3"
               initial={{ opacity: 0, x: -50 }}
@@ -393,9 +379,7 @@ export default function LandingPage() {
             </motion.div>
           </div>
 
-          {/* Player Feature Section */}
           <div className="mt-32 grid md:grid-cols-2 gap-16 items-center">
-            {/* Player Screenshot */}
             <motion.div 
               className="order-2 md:order-1"
               initial={{ opacity: 0, x: -50 }}
@@ -418,7 +402,6 @@ export default function LandingPage() {
               </motion.div>
             </motion.div>
             
-            {/* Player Feature Description */}
             <motion.div 
               className="order-1 md:order-2"
               initial={{ opacity: 0, x: 50 }}

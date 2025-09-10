@@ -46,12 +46,10 @@ export default function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 bg-surface border-b border-border h-16 z-50">
       <div className="flex items-center justify-between h-full px-6">
-        {/* Logo section */}
         <div className="relative flex items-center justify-center gap-2">
           <img src="/logo.png" alt="" height={48} width={100} />
         </div>
 
-        {/* Center search bar */}
         <div className="flex-1 max-w-md mx-8 relative" ref={searchRef}>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -124,7 +122,6 @@ export default function Header() {
           </ErrorBoundary>
         </div>
 
-        {/* Right user section */}
         <div className="flex items-center">
           <div className="flex items-center gap-3">
             {profileLoading ? (

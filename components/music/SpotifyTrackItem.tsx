@@ -6,7 +6,6 @@ import { useSpotifyPlayer } from "@/contexts/SpotifyPlayerContext";
 import { useSearch } from "@/contexts/SearchContext";
 import LikeButton from "@/components/ui/LikeButton";
 
-// Utility function to shuffle an array
 const shuffleArray = (array: SpotifyTrack[]): SpotifyTrack[] => {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -27,45 +26,30 @@ export default function SpotifyTrackItem({
   albumTracks,
   trackIndex,
 }: SpotifyTrackItemProps) {
-  const { playTrack, playTracks, current_track, is_paused, allLikedTracks } =
+  const { playTrack, playTracks, current_track, allLikedTracks } =
     useSpotifyPlayer();
     
   const { toggleLikedTrackMutation, isTrackLiked } = useSearch();
 
   const isCurrentTrack = current_track?.id === track.id;
   
-  // Console log to verify access to all liked tracks from context
-  React.useEffect(() => {
-    if (allLikedTracks?.length > 0) {
-      console.log(`🎵 SpotifyTrackItem "${track.name}" has access to ${allLikedTracks.length} liked tracks from context:`, 
-        allLikedTracks.slice(0, 3).map(t => t.name).join(', ') + (allLikedTracks.length > 3 ? '...' : '')
-      );
-    }
-  }, [allLikedTracks, track.name]);
 
   const handlePlay = async () => {
     if (albumTracks && trackIndex !== undefined) {
-      // Start with album tracks
       const albumUris = albumTracks.map((t) => t.uri);
       
-      // Add shuffled library tracks for continuation (excluding current album tracks)
       let finalTrackUris = albumUris;
       
       if (allLikedTracks && allLikedTracks.length > 0) {
-        // Get album track IDs for filtering
         const albumTrackIds = new Set(albumTracks.map(t => t.id));
         
-        // Filter out album tracks from library and shuffle the remaining
         const libraryTracksWithoutAlbum = allLikedTracks.filter(t => !albumTrackIds.has(t.id));
         const shuffledLibrary = shuffleArray(libraryTracksWithoutAlbum);
         
-        // Combine: album tracks first, then shuffled library
         finalTrackUris = [
           ...albumUris,
           ...shuffledLibrary.map(t => t.uri)
         ];
-        
-        console.log(`🎯 Created queue: ${albumTracks.length} album tracks + ${shuffledLibrary.length} shuffled library tracks = ${finalTrackUris.length} total`);
       }
       
       await playTracks(finalTrackUris, trackIndex);
@@ -105,7 +89,6 @@ export default function SpotifyTrackItem({
           {convertToMinutes(track.duration_ms)}
         </span>
         
-        {/* Like button for tracks in album modal */}
         <LikeButton
           trackId={track.id}
           isLiked={isTrackLiked(track.id)}

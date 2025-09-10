@@ -22,7 +22,6 @@ export default function AlbumGrid({ albums, likedTracks }: AlbumGridProps) {
 
   const ALBUMS_PER_PAGE = 18;
 
-  // Calculate pagination values
   const totalPages = Math.ceil(albums.length / ALBUMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ALBUMS_PER_PAGE;
   const endIndex = startIndex + ALBUMS_PER_PAGE;
@@ -110,7 +109,6 @@ export default function AlbumGrid({ albums, likedTracks }: AlbumGridProps) {
             }}
             whileTap={{ scale: 0.98 }}
           >
-              {/* Glow effect for new albums */}
               {isNew && (
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-pink-500/20 to-orange-400/20 rounded-lg blur-md -z-10"
@@ -142,7 +140,6 @@ export default function AlbumGrid({ albums, likedTracks }: AlbumGridProps) {
                   height={300}
                 />
                 
-                {/* New album badge */}
                 {isNew && (
                   <motion.div
                     className="absolute top-2 right-2 bg-gradient-to-r from-pink-500 to-orange-400 text-white text-xs px-2 py-1 rounded-full font-medium shadow-lg"
@@ -169,7 +166,6 @@ export default function AlbumGrid({ albums, likedTracks }: AlbumGridProps) {
         })}
       </div>
 
-      {/* Pagination Component */}
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

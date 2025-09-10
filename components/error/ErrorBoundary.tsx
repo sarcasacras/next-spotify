@@ -31,10 +31,6 @@ class ErrorBoundaryClass extends Component<Props & { onError?: (error: Error, co
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     const context = this.props.context || 'Unknown Component';
     
-    // Log the error for debugging
-    console.error(`🚨 [ERROR BOUNDARY] ${context} crashed:`, error);
-    console.error('Component stack:', errorInfo.componentStack);
-    
     // Call the error callback if provided
     this.props.onError?.(error, context);
   }

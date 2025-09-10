@@ -44,7 +44,6 @@ export default function Pagination({
       tabIndex={0}
     >
       <div className="flex items-center gap-4">
-        {/* Previous button */}
         <motion.button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
@@ -57,12 +56,10 @@ export default function Pagination({
           </span>
         </motion.button>
 
-        {/* Page indicator */}
         <div className="flex items-center px-4 py-2 text-sm font-medium text-text-primary bg-surface-hover rounded-full">
           {currentPage} of {totalPages}
         </div>
 
-        {/* Next button */}
         <motion.button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
