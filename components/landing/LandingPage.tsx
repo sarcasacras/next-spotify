@@ -179,7 +179,7 @@ export default function LandingPage() {
               disabled={isSigningIn}
               className="relative inline-flex cursor-pointer items-center justify-center w-[285px] p-0.5 overflow-hidden text-lg font-medium text-gray-900 rounded-full group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 dark:text-white dark:hover:text-gray-900 disabled:opacity-75 disabled:cursor-not-allowed transform transition-all duration-300 hover:scale-105"
             >
-              <span className="relative px-8 py-4 transition-all ease-in duration-75 bg-surface rounded-full group-hover:bg-transparent group-hover:dark:bg-transparent font-bold focus:outline-none flex items-center justify-center min-w-[200px] h-[56px]">
+              <span className="relative px-8 py-4 transition-all ease-in duration-75 bg-surface rounded-full group-hover:bg-transparent group-hover:dark:bg-transparent font-bold focus:outline-none flex items-center justify-center min-w-[280px] h-[56px]">
                 {isSigningIn ? (
                   <div className="flex items-center gap-2">
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
