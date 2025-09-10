@@ -132,25 +132,10 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
             prev.current_track?.id !== state.track_window.current_track?.id;
 
           if (trackChanged && state.track_window.current_track) {
-            console.log(
-              "🎵 NEW TRACK STARTED:",
-              state.track_window.current_track.name
-            );
-            console.log(
-              "📋 Next tracks when new track started:",
-              state.track_window.next_tracks
-            );
-            console.log(
-              "📋 Previous tracks when new track started:",
-              state.track_window.previous_tracks
-            );
-
-            if (state.track_window.next_tracks.length === 0 && state.track_window.previous_tracks.length !== 0) {
-              console.log("haha, 0");
-              console.log("🔄 Queue is empty, triggering shuffle library...");
-              console.log("📱 Device ID:", prev.device_id);
-              console.log("📀 All liked tracks count:", prev.allLikedTracks.length);
-
+            if (
+              state.track_window.next_tracks.length === 0 &&
+              state.track_window.previous_tracks.length !== 0
+            ) {
               // Pass the correct values directly to shuffleLibrary
               setTimeout(() => {
                 shuffleLibrary(prev.device_id as string, prev.allLikedTracks);
@@ -233,23 +218,21 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
     }
   };
 
-  const shuffleLibrary = async (deviceId?: string, likedTracks?: SpotifyTrack[]) => {
+  const shuffleLibrary = async (
+    deviceId?: string,
+    likedTracks?: SpotifyTrack[]
+  ) => {
     // Use provided values or fall back to state
     const finalDeviceId = deviceId || state.device_id;
     const finalLikedTracks = likedTracks || state.allLikedTracks;
-    
+
     if (!finalDeviceId || !finalLikedTracks.length) {
       console.log("❌ shuffleLibrary failed - no device or tracks:", {
         deviceId: finalDeviceId,
-        tracksCount: finalLikedTracks.length
+        tracksCount: finalLikedTracks.length,
       });
       return;
     }
-
-    console.log("✅ shuffleLibrary executing with:", {
-      deviceId: finalDeviceId,
-      tracksCount: finalLikedTracks.length
-    });
 
     const shuffledTracks = shuffleArray(finalLikedTracks);
     const shuffledUris = shuffledTracks.map((track) => track.uri);
