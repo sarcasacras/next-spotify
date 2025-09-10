@@ -94,49 +94,52 @@ export default function SpotifyPlayer() {
     <motion.div
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="fixed bottom-0 left-0 right-0 bg-surface border-t border-border p-4 z-50"
+      className="fixed bottom-0 left-0 right-0 bg-surface border-t border-border p-3 md:p-4 z-50"
     >
-      <div className="max-w-screen-xl mx-auto flex items-center justify-between">
-        <div className="flex items-center space-x-4 flex-1 min-w-0">
-          <div className="relative w-14 h-14 flex-shrink-0">
-            {current_track ? (
-              <Image
-                src={
-                  current_track.album.images[0]?.url || "/placeholder-album.png"
-                }
-                alt={current_track.album.name}
-                fill
-                className="object-cover rounded-lg"
-              />
-            ) : (
-              <div className="w-14 h-14 bg-surface-hover rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-secondary"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M18 3a1 1 0 00-1.447-.894L8.763 6H5a3 3 0 000 6h.28l1.771 5.316A1 1 0 008 18h1a1 1 0 001-1v-4.382l6.553 3.276A1 1 0 0018 15V3z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-            )}
-          </div>
-          <div className="min-w-0">
-            <h4 className="text-text-primary font-medium truncate">
-              {current_track?.name || "No track selected"}
-            </h4>
-            <p className="text-text-secondary text-sm truncate">
-              {current_track
-                ? current_track.artists.map((artist) => artist.name).join(", ")
-                : "Choose a track to play"}
-            </p>
+      <div className="max-w-screen-xl mx-auto flex flex-col md:grid md:grid-cols-3 md:items-center md:gap-4">
+        {/* Track info section - full width on mobile, left grid column on desktop */}
+        <div className="flex items-center justify-between md:justify-start md:space-x-4 min-w-0 mb-3 md:mb-0">
+          <div className="flex items-center space-x-3 md:space-x-4 min-w-0">
+            <div className="relative w-12 h-12 md:w-14 md:h-14 flex-shrink-0">
+              {current_track ? (
+                <Image
+                  src={
+                    current_track.album.images[0]?.url || "/placeholder-album.png"
+                  }
+                  alt={current_track.album.name}
+                  fill
+                  className="object-cover rounded-lg"
+                />
+              ) : (
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-surface-hover rounded-lg flex items-center justify-center">
+                  <svg
+                    className="w-5 h-5 md:w-6 md:h-6 text-secondary"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 3a1 1 0 00-1.447-.894L8.763 6H5a3 3 0 000 6h.28l1.771 5.316A1 1 0 008 18h1a1 1 0 001-1v-4.382l6.553 3.276A1 1 0 0018 15V3z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+              )}
+            </div>
+            <div className="min-w-0">
+              <h4 className="text-text-primary font-medium truncate text-sm md:text-base">
+                {current_track?.name || "No track selected"}
+              </h4>
+              <p className="text-text-secondary text-xs md:text-sm truncate">
+                {current_track
+                  ? current_track.artists.map((artist) => artist.name).join(", ")
+                  : "Choose a track to play"}
+              </p>
+            </div>
           </div>
 
           {current_track && (
-            <div className="ml-2">
+            <div className="ml-0 md:ml-2">
               <LikeButton
                 trackId={current_track.id}
                 isLiked={isTrackLiked(current_track.id)}
@@ -147,21 +150,22 @@ export default function SpotifyPlayer() {
           )}
         </div>
 
-        <div className="flex flex-col items-center space-y-2 flex-1 max-w-md">
-          <div className="flex items-center space-x-4">
+        {/* Controls section - full width on mobile, center grid column on desktop */}
+        <div className="flex flex-col items-center space-y-2 mb-0 md:mb-0">
+          <div className="flex items-center space-x-6 md:space-x-4">
             <motion.button
               onClick={previousTrack}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               disabled={!current_track}
-              className={`transition-colors ${
+              className={`transition-colors p-2 ${
                 current_track
                   ? "text-text-secondary hover:text-text-primary"
                   : "text-secondary cursor-not-allowed"
               }`}
             >
               <svg
-                className="w-5 h-5 cursor-pointer"
+                className="w-6 h-6 md:w-5 md:h-5"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -183,7 +187,7 @@ export default function SpotifyPlayer() {
               }`}
             >
               <span
-                className={`relative p-2 transition-all ease-in duration-75 rounded-full font-bold focus:outline-none ${
+                className={`relative p-3 md:p-2 transition-all ease-in duration-75 rounded-full font-bold focus:outline-none ${
                   device_id && allLikedTracks.length > 0
                     ? "bg-surface group-hover:bg-transparent text-text-primary"
                     : "bg-surface text-secondary"
@@ -193,7 +197,7 @@ export default function SpotifyPlayer() {
                   {is_paused ? (
                     <motion.svg
                       key="play"
-                      className="w-4 h-4"
+                      className="w-5 h-5 md:w-4 md:h-4"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                       initial={{ scale: 0.6, rotate: -90, opacity: 0 }}
@@ -209,7 +213,7 @@ export default function SpotifyPlayer() {
                   ) : (
                     <motion.svg
                       key="pause"
-                      className="w-4 h-4"
+                      className="w-5 h-5 md:w-4 md:h-4"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                       initial={{ scale: 0.6, rotate: -90, opacity: 0 }}
@@ -232,14 +236,14 @@ export default function SpotifyPlayer() {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               disabled={!current_track}
-              className={`transition-colors ${
+              className={`transition-colors p-2 ${
                 current_track
                   ? "text-text-secondary hover:text-text-primary"
                   : "text-secondary cursor-not-allowed"
               }`}
             >
               <svg
-                className="w-5 h-5 cursor-pointer"
+                className="w-6 h-6 md:w-5 md:h-5"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -253,11 +257,11 @@ export default function SpotifyPlayer() {
           </div>
 
           <div className="flex items-center space-x-2 w-full">
-            <span className="text-xs text-text-secondary w-12 text-right">
+            <span className="text-xs text-text-secondary w-10 md:w-12 text-right">
               {convertToMinutes(localPosition)}
             </span>
             <div
-              className="flex-1 bg-surface-hover h-1 rounded-full cursor-pointer"
+              className="flex-1 bg-surface-hover h-2 md:h-1 rounded-full cursor-pointer"
               onClick={handleSeek}
             >
               <motion.div
@@ -267,13 +271,14 @@ export default function SpotifyPlayer() {
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-gradient-to-r from-pink-500 to-orange-400 rounded-full opacity-0 hover:opacity-100 transition-opacity" />
               </motion.div>
             </div>
-            <span className="text-xs text-text-secondary w-12">
+            <span className="text-xs text-text-secondary w-10 md:w-12">
               {convertToMinutes(duration)}
             </span>
           </div>
         </div>
 
-        <div className="flex items-center space-x-2 flex-1 justify-end">
+        {/* Volume controls - hidden on mobile, right grid column on desktop */}
+        <div className="hidden md:flex items-center space-x-2 justify-end">
           <svg
             className="w-5 h-5 text-text-secondary"
             fill="currentColor"

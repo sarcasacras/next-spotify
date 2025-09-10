@@ -45,12 +45,12 @@ export default function Header() {
   }
   return (
     <header className="fixed top-0 left-0 right-0 bg-surface border-b border-border h-16 z-50">
-      <div className="flex items-center justify-between h-full px-6">
-        <div className="relative flex items-center justify-center gap-2">
+      <div className="flex items-center justify-between h-full px-4 md:px-6">
+        <div className="relative items-center justify-center gap-2 hidden md:flex">
           <img src="/logo.png" alt="" height={48} width={100} />
         </div>
 
-        <div className="flex-1 max-w-md mx-8 relative" ref={searchRef}>
+        <div className="flex-1 max-w-md mx-2 md:mx-8 relative" ref={searchRef}>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <svg
@@ -124,23 +124,28 @@ export default function Header() {
 
         <div className="flex items-center">
           <div className="flex items-center gap-3">
-            {profileLoading ? (
-              <div className="w-10 h-10 rounded-full bg-surface-hover animate-pulse" />
-            ) : userProfile?.images?.[0]?.url ? (
-              <Image
-                src={userProfile.images[0].url}
-                alt={userProfile.display_name || "User"}
-                width={64}
-                height={64}
-                className="rounded-full w-10 h-10"
-              />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-surface-hover flex items-center justify-center">
-                <span className="text-text-secondary text-sm">
-                  {userProfile?.display_name?.[0] || "U"}
-                </span>
-              </div>
-            )}
+            {/* Avatar - hidden on mobile */}
+            <div className="hidden md:block">
+              {profileLoading ? (
+                <div className="w-10 h-10 rounded-full bg-surface-hover animate-pulse" />
+              ) : userProfile?.images?.[0]?.url ? (
+                <Image
+                  src={userProfile.images[0].url}
+                  alt={userProfile.display_name || "User"}
+                  width={64}
+                  height={64}
+                  className="rounded-full w-10 h-10"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-surface-hover flex items-center justify-center">
+                  <span className="text-text-secondary text-sm">
+                    {userProfile?.display_name?.[0] || "U"}
+                  </span>
+                </div>
+              )}
+            </div>
+            
+            {/* Sign out button - responsive sizing */}
             <button
               onClick={async () => {
                 setIsSigningOut(true);
@@ -153,11 +158,13 @@ export default function Header() {
               disabled={isSigningOut}
               className="relative inline-flex cursor-pointer items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-full group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 dark:text-white dark:hover:text-gray-900 disabled:opacity-75 disabled:cursor-not-allowed"
             >
-              <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-surface rounded-full group-hover:bg-transparent group-hover:dark:bg-transparent font-bold focus:outline-none flex items-center justify-center w-[100px] h-[35px]">
+              <span className="relative px-3 md:px-5 py-2.5 transition-all ease-in duration-75 bg-surface rounded-full group-hover:bg-transparent group-hover:dark:bg-transparent font-bold focus:outline-none flex items-center justify-center w-[100px] md:w-[100px] h-[35px]">
                 {isSigningOut ? (
                   <Spinner size="sm" className="text-white" />
                 ) : (
-                  "Sign Out"
+                  <>
+                    <span>Sign Out</span>
+                  </>
                 )}
               </span>
             </button>
