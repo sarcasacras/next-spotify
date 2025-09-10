@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 import Header from "@/components/layout/Header";
 import SpotifyPlayer from "@/components/music/SpotifyPlayer";
+import MainContent from "@/components/layout/MainContent";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,9 +36,9 @@ export default function RootLayout({
       >
         <Providers>
           <Header />
-          <main className="pt-16">
+          <MainContent>
             {children}
-          </main>
+          </MainContent>
           <SpotifyPlayer />
         </Providers>
       </body>
