@@ -62,22 +62,18 @@ export default function AlbumModal({
         </motion.div>
         <motion.div
           className="w-full bg-surface h-[60%] rounded-b-2xl overflow-y-scroll no-scrollbar"
-          initial={{ opacity: 0, y: 20, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 20, scale: 0.95 }}
-          transition={{ duration: 0.3, delay: 0.1, ease: "easeOut" }}
         >
           {likedTracks.map((track, index) => (
             <motion.div
               key={track.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{
-                duration: 0.2,
-                delay: 0.2 + index * 0.08,
-                ease: "easeOut",
-              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              // transition={{
+              //   duration: 0.2,
+              //   delay: 0.2 + index * 0.08,
+              //   ease: "easeOut",
+              // }}
             >
               <SpotifyTrackItem
                 track={track}
