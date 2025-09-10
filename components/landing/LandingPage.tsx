@@ -321,7 +321,7 @@ export default function LandingPage() {
               </motion.div>
             </motion.div>
 
-            {/* Player Feature */}
+            {/* Search Functionality Section */}
             <motion.div 
               className="order-3"
               initial={{ opacity: 0, x: -50 }}
@@ -336,7 +336,7 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.5 }}
               >
-                Seamless Playback
+                Intelligent Search
               </motion.h3>
               <motion.p 
                 className="text-xl text-gray-300 mb-6 leading-relaxed"
@@ -345,8 +345,8 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.7 }}
               >
-                Advanced music player with smart shuffle continuation. 
-                When an album ends, your entire library keeps the music flowing.
+                Search through your entire library and discover new music from Spotify's catalog. 
+                Smart suggestions help you find exactly what you're looking for.
               </motion.p>
               <motion.div 
                 className="flex flex-wrap gap-2"
@@ -356,17 +356,17 @@ export default function LandingPage() {
                 transition={{ duration: 0.6, delay: 0.9 }}
               >
                 <motion.span 
+                  className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm"
+                  whileHover={{ scale: 1.1 }}
+                >Library Search</motion.span>
+                <motion.span 
+                  className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm"
+                  whileHover={{ scale: 1.1 }}
+                >Spotify Discovery</motion.span>
+                <motion.span 
                   className="px-3 py-1 bg-cyan-500/20 text-cyan-300 rounded-full text-sm"
                   whileHover={{ scale: 1.1 }}
-                >Smart Shuffle</motion.span>
-                <motion.span 
-                  className="px-3 py-1 bg-lime-500/20 text-lime-300 rounded-full text-sm"
-                  whileHover={{ scale: 1.1 }}
-                >Library Integration</motion.span>
-                <motion.span 
-                  className="px-3 py-1 bg-pink-500/20 text-pink-300 rounded-full text-sm"
-                  whileHover={{ scale: 1.1 }}
-                >Never Stops</motion.span>
+                >Instant Results</motion.span>
               </motion.div>
             </motion.div>
             
@@ -381,6 +381,32 @@ export default function LandingPage() {
                 className="relative group"
                 transition={{ duration: 0.3 }}
               >
+                <div className="absolute -inset-1 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                <div className="relative bg-gray-900 rounded-2xl p-2 shadow-xl">
+                  <img 
+                    src="/landing/search-dropdown.png" 
+                    alt="Search Dropdown Interface" 
+                    className="w-full rounded-xl"
+                  />
+                </div>
+              </motion.div>
+            </motion.div>
+          </div>
+
+          {/* Player Feature Section */}
+          <div className="mt-32 grid md:grid-cols-2 gap-16 items-center">
+            {/* Player Screenshot */}
+            <motion.div 
+              className="order-2 md:order-1"
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <motion.div 
+                className="relative group"
+                transition={{ duration: 0.3 }}
+              >
                 <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-lime-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
                 <div className="relative bg-gray-900 rounded-2xl p-2 shadow-xl">
                   <img 
@@ -389,6 +415,55 @@ export default function LandingPage() {
                     className="w-full rounded-xl"
                   />
                 </div>
+              </motion.div>
+            </motion.div>
+            
+            {/* Player Feature Description */}
+            <motion.div 
+              className="order-1 md:order-2"
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              <motion.h3 
+                className="text-3xl md:text-4xl font-bold mb-4 text-white"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+              >
+                Seamless Playback
+              </motion.h3>
+              <motion.p 
+                className="text-xl text-gray-300 mb-6 leading-relaxed"
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.8 }}
+              >
+                Advanced music player with smart shuffle continuation. 
+                When an album ends, your entire library keeps the music flowing.
+              </motion.p>
+              <motion.div 
+                className="flex flex-wrap gap-2"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 1 }}
+              >
+                <motion.span 
+                  className="px-3 py-1 bg-cyan-500/20 text-cyan-300 rounded-full text-sm"
+                  whileHover={{ scale: 1.1 }}
+                >Smart Shuffle</motion.span>
+                <motion.span 
+                  className="px-3 py-1 bg-lime-500/20 text-lime-300 rounded-full text-sm"
+                  whileHover={{ scale: 1.1 }}
+                >Library Integration</motion.span>
+                <motion.span 
+                  className="px-3 py-1 bg-pink-500/20 text-pink-300 rounded-full text-sm"
+                  whileHover={{ scale: 1.1 }}
+                >Never Stops</motion.span>
               </motion.div>
             </motion.div>
           </div>
