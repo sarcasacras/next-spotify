@@ -5,6 +5,7 @@ import { Providers } from "@/components/providers";
 import Header from "@/components/layout/Header";
 import SpotifyPlayer from "@/components/music/SpotifyPlayer";
 import MainContent from "@/components/layout/MainContent";
+import ErrorBoundary from "@/components/error/ErrorBoundary";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,11 +36,50 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <Header />
-          <MainContent>
-            {children}
-          </MainContent>
-          <SpotifyPlayer />
+          <ErrorBoundary context="Header">
+            <Header />
+          </ErrorBoundary>
+          <ErrorBoundary 
+            context="Main Content"
+            fallback={
+              <MainContent>
+                <div className="min-h-screen bg-black text-white pb-24 flex items-center justify-center">
+                  <div className="text-center max-w-md">
+                    <div className="bg-red-900/20 border border-red-700 rounded-lg p-8">
+                      <h2 className="text-red-100 text-xl font-medium mb-4">Something went wrong</h2>
+                      <p className="text-red-200 mb-6">
+                        The app encountered an unexpected error. Don't worry, your music and preferences are safe.
+                      </p>
+                      <button 
+                        onClick={() => window.location.reload()}
+                        className="bg-gradient-to-br from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 px-6 py-3 rounded-full font-medium transition-colors"
+                      >
+                        Refresh App
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </MainContent>
+            }
+          >
+            <MainContent>
+              {children}
+            </MainContent>
+          </ErrorBoundary>
+          <ErrorBoundary 
+            context="Spotify Player" 
+            fallback={
+              <div className="fixed bottom-0 left-0 right-0 bg-red-900/20 border-t border-red-700 p-4 z-50">
+                <div className="max-w-screen-xl mx-auto text-center">
+                  <p className="text-red-100 text-sm">
+                    🎵 Player temporarily unavailable. Try refreshing the page.
+                  </p>
+                </div>
+              </div>
+            }
+          >
+            <SpotifyPlayer />
+          </ErrorBoundary>
         </Providers>
       </body>
     </html>

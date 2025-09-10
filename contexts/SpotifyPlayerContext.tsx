@@ -8,6 +8,9 @@ import React, {
   ReactNode,
 } from "react";
 import { useSession } from "next-auth/react";
+import { spotifyFetchVoid } from "@/lib/error-handling";
+import { useNotification } from "@/contexts/NotificationContext";
+import { showErrorNotification } from "@/lib/error-handling";
 import type { SpotifyTrack, SpotifySavedTrack } from "@/types/spotify";
 
 declare global {
@@ -61,6 +64,7 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
   initialLikedTracks = [],
 }) => {
   const { data: session } = useSession();
+  const { addNotification } = useNotification();
   const [state, setState] = useState<SpotifyPlayerState>({
     device_id: null,
     player: null,
@@ -176,17 +180,13 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
   };
 
   const playTrack = async (uri: string) => {
-    if (!state.device_id || !session?.accessToken) return;
+    if (!state.device_id) return;
 
     try {
-      await fetch(
-        `https://api.spotify.com/v1/me/player/play?device_id=${state.device_id}`,
+      await spotifyFetchVoid(
+        `/me/player/play?device_id=${state.device_id}`,
         {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.accessToken}`,
-          },
           body: JSON.stringify({
             uris: [uri],
           }),
@@ -194,21 +194,18 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
       );
     } catch (error) {
       console.error("Error playing track:", error);
+      showErrorNotification(error as any, addNotification);
     }
   };
 
   const playTracks = async (uris: string[], startIndex: number = 0) => {
-    if (!state.device_id || !session?.accessToken) return;
+    if (!state.device_id) return;
 
     try {
-      await fetch(
-        `https://api.spotify.com/v1/me/player/play?device_id=${state.device_id}`,
+      await spotifyFetchVoid(
+        `/me/player/play?device_id=${state.device_id}`,
         {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.accessToken}`,
-          },
           body: JSON.stringify({
             uris: uris,
             offset: { position: startIndex },
@@ -217,6 +214,7 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
       );
     } catch (error) {
       console.error("Error playing tracks:", error);
+      showErrorNotification(error as any, addNotification);
     }
   };
 

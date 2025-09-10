@@ -7,13 +7,12 @@ import Spinner from "@/components/ui/Spinner";
 import { useState, useRef, useEffect } from "react";
 import { useSearch } from "@/contexts/SearchContext";
 import SearchDropdown from "@/components/search/SearchDropdown";
+import ErrorBoundary from "@/components/error/ErrorBoundary";
 
 export default function Header() {
   const { data: session } = useSession();
   const [isSigningOut, setIsSigningOut] = useState(false);
-  const { data: userProfile, isLoading: profileLoading } = useUserProfile(
-    session?.accessToken
-  );
+  const { data: userProfile, isLoading: profileLoading } = useUserProfile();
   const { query, setQuery, isOpen, setIsOpen } = useSearch();
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -108,10 +107,21 @@ export default function Header() {
             )}
           </div>
 
-          <SearchDropdown
-            isOpen={isOpen && query.trim() !== ""}
-            onClose={() => setIsOpen(false)}
-          />
+          <ErrorBoundary 
+            context="Search Dropdown"
+            fallback={
+              <div className="absolute top-full left-0 right-0 mt-2 bg-red-900/20 border border-red-700 rounded-lg p-3 z-50">
+                <p className="text-red-100 text-sm text-center">
+                  Search temporarily unavailable
+                </p>
+              </div>
+            }
+          >
+            <SearchDropdown
+              isOpen={isOpen && query.trim() !== ""}
+              onClose={() => setIsOpen(false)}
+            />
+          </ErrorBoundary>
         </div>
 
         {/* Right user section */}

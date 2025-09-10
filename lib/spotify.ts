@@ -1,10 +1,12 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { spotifyFetchJson, spotifyFetchVoid } from "@/lib/error-handling";
 import type { 
   SpotifyLikedTracksResponse, 
   SpotifySearchResponse,
   SpotifyTrack,
-  SpotifySavedTrack
+  SpotifySavedTrack,
+  SpotifyUserProfile
 } from "@/types/spotify";
 
 const SPOTIFY_BASE_URL = "https://api.spotify.com/v1";
@@ -19,32 +21,25 @@ export async function getSpotifyAccessToken() {
   return session.accessToken as string;
 }
 
+// Note: We're keeping this function for backwards compatibility,
+// but now it uses our enhanced error handling system
 export async function spotifyFetch(endpoint: string, accessToken: string) {
-  const url = `${SPOTIFY_BASE_URL}${endpoint}`;
-
-  const response = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Spotify API error: ${response.status}`);
-  }
-
-  return response.json();
+  // For backwards compatibility, we'll simulate the old interface
+  // but internally use our new system that doesn't need an accessToken parameter
+  return spotifyFetchJson(endpoint);
 }
 
 export async function getUserLikedTracks(
-  accessToken: string,
+  _accessToken: string,
   limit: number = 50,
   offset: number = 0
 ): Promise<SpotifyLikedTracksResponse> {
-  return spotifyFetch(`/me/tracks?limit=${limit}&offset=${offset}`, accessToken);
+  // The accessToken parameter is now ignored as our enhanced system handles tokens automatically
+  return spotifyFetchJson(`/me/tracks?limit=${limit}&offset=${offset}`);
 }
 
 export async function getAllUserLikedTracks(
-  accessToken: string
+  _accessToken: string
 ): Promise<SpotifyLikedTracksResponse> {
   const allTracks: any[] = [];
   let hasMore = true;
@@ -53,7 +48,7 @@ export async function getAllUserLikedTracks(
   
   while (hasMore) {
     const response: SpotifyLikedTracksResponse = await getUserLikedTracks(
-      accessToken,
+      _accessToken,
       limit,
       offset
     );
@@ -66,7 +61,7 @@ export async function getAllUserLikedTracks(
   }
   
   // Return the same structure as a single response but with all items
-  const firstResponse = await getUserLikedTracks(accessToken, limit, 0);
+  const firstResponse = await getUserLikedTracks(_accessToken, limit, 0);
   return {
     ...firstResponse,
     items: allTracks,
@@ -77,17 +72,19 @@ export async function getAllUserLikedTracks(
   };
 }
 
-export async function getUserProfile(accessToken: string) {
-  return spotifyFetch("/me", accessToken);
+export async function getUserProfile(_accessToken: string): Promise<SpotifyUserProfile> {
+  // The accessToken parameter is now ignored as our enhanced system handles tokens automatically  
+  return spotifyFetchJson("/me");
 }
 
 export async function searchSpotifyTracks(
   query: string,
-  accessToken: string,
+  _accessToken: string,
   limit: number = 20
 ): Promise<SpotifySearchResponse> {
+  // The accessToken parameter is now ignored as our enhanced system handles tokens automatically
   const encodedQuery = encodeURIComponent(query);
-  return spotifyFetch(`/search?q=${encodedQuery}&type=track&limit=${limit}`, accessToken);
+  return spotifyFetchJson(`/search?q=${encodedQuery}&type=track&limit=${limit}`);
 }
 
 export function searchUserLibrary(
@@ -109,44 +106,29 @@ export function searchUserLibrary(
 
 export async function saveLikedTrack(
   trackId: string,
-  accessToken: string
+  _accessToken: string
 ): Promise<void> {
-  const response = await fetch(`${SPOTIFY_BASE_URL}/me/tracks?ids=${trackId}`, {
+  // The accessToken parameter is now ignored as our enhanced system handles tokens automatically
+  await spotifyFetchVoid(`/me/tracks?ids=${trackId}`, {
     method: "PUT",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
   });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Failed to save track: ${response.status} ${response.statusText}. ${errorText}`);
-  }
 }
 
 export async function removeLikedTrack(
   trackId: string,
-  accessToken: string
+  _accessToken: string
 ): Promise<void> {
-  const response = await fetch(`${SPOTIFY_BASE_URL}/me/tracks?ids=${trackId}`, {
+  // The accessToken parameter is now ignored as our enhanced system handles tokens automatically
+  await spotifyFetchVoid(`/me/tracks?ids=${trackId}`, {
     method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
   });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Failed to remove track: ${response.status} ${response.statusText}. ${errorText}`);
-  }
 }
 
 export async function checkLikedTracks(
   trackIds: string[],
-  accessToken: string
+  _accessToken: string
 ): Promise<boolean[]> {
+  // The accessToken parameter is now ignored as our enhanced system handles tokens automatically
   const ids = trackIds.join(',');
-  return spotifyFetch(`/me/tracks/contains?ids=${ids}`, accessToken);
+  return spotifyFetchJson(`/me/tracks/contains?ids=${ids}`);
 }

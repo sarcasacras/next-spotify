@@ -17,6 +17,8 @@ import {
   removeLikedTrack,
   checkLikedTracks 
 } from '@/lib/spotify';
+import { useNotification } from '@/contexts/NotificationContext';
+import { showErrorNotification, showSuccessNotification } from '@/lib/error-handling';
 import type { 
   SpotifyTrack, 
   SearchMode, 
@@ -53,6 +55,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
 }) => {
   const { data: session } = useSession();
   const queryClient = useQueryClient();
+  const { addNotification } = useNotification();
   const [query, setQuery] = useState('');
   const [searchMode, setSearchMode] = useState<SearchMode>('spotify');
   const [isOpen, setIsOpen] = useState(false);
@@ -108,10 +111,18 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
       await queryClient.invalidateQueries({ 
         queryKey: ["allLikedTracks", session.accessToken] 
       });
+      
+      // Show success notification
+      showSuccessNotification(
+        "Track Saved",
+        "Track added to your liked songs!",
+        addNotification
+      );
     } catch (error) {
       console.error('Error saving track:', error);
+      showErrorNotification(error as any, addNotification);
     }
-  }, [session?.accessToken, queryClient]);
+  }, [session?.accessToken, queryClient, addNotification]);
 
   // Remove liked track function
   const removeLikedTrackMutation = useCallback(async (trackId: string) => {
@@ -129,10 +140,18 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
       await queryClient.invalidateQueries({ 
         queryKey: ["allLikedTracks", session.accessToken] 
       });
+      
+      // Show success notification
+      showSuccessNotification(
+        "Track Removed",
+        "Track removed from your liked songs!",
+        addNotification
+      );
     } catch (error) {
       console.error('Error removing track:', error);
+      showErrorNotification(error as any, addNotification);
     }
-  }, [session?.accessToken, queryClient]);
+  }, [session?.accessToken, queryClient, addNotification]);
 
   // Toggle liked track function (for convenience)
   const toggleLikedTrackMutation = useCallback(async (trackId: string, currentlyLiked: boolean) => {

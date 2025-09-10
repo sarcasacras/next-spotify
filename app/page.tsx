@@ -8,6 +8,7 @@ import { extractUniqueAlbums } from "@/lib/album-utils";
 import { useQuery } from "@tanstack/react-query";
 import Spinner from "@/components/ui/Spinner";
 import LandingPage from "@/components/landing/LandingPage";
+import ErrorBoundary from "@/components/error/ErrorBoundary";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -46,7 +47,27 @@ export default function Home() {
         )}
 
         {albums.length > 0 && (
-          <AlbumGrid albums={albums} likedTracks={tracks} />
+          <ErrorBoundary 
+            context="Album Grid"
+            fallback={
+              <div className="text-center p-8">
+                <div className="bg-red-900/20 border border-red-700 rounded-lg p-6 max-w-md mx-auto">
+                  <h3 className="text-red-100 font-medium mb-2">Album Grid Unavailable</h3>
+                  <p className="text-red-200 text-sm mb-4">
+                    The album display encountered an error. Your music is safe.
+                  </p>
+                  <button 
+                    onClick={() => window.location.reload()} 
+                    className="bg-red-700 hover:bg-red-600 px-4 py-2 rounded text-sm transition-colors"
+                  >
+                    Refresh Page
+                  </button>
+                </div>
+              </div>
+            }
+          >
+            <AlbumGrid albums={albums} likedTracks={tracks} />
+          </ErrorBoundary>
         )}
       </main>
     </div>

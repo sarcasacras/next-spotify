@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { SpotifyPlayerProvider } from "@/contexts/SpotifyPlayerContext";
 import { SearchProvider } from "@/contexts/SearchContext";
+import { NotificationProvider } from "@/contexts/NotificationContext";
 import { getAllUserLikedTracks } from "@/lib/spotify";
 import type { SpotifySavedTrack } from "@/types/spotify";
 
@@ -24,11 +25,13 @@ function ContextWrapper({ children }: { children: React.ReactNode }) {
   const tracks: SpotifySavedTrack[] = likedTracksData?.items || [];
 
   return (
-    <SpotifyPlayerProvider initialLikedTracks={tracks}>
-      <SearchProvider likedTracks={tracks}>
-        {children}
-      </SearchProvider>
-    </SpotifyPlayerProvider>
+    <NotificationProvider>
+      <SpotifyPlayerProvider initialLikedTracks={tracks}>
+        <SearchProvider likedTracks={tracks}>
+          {children}
+        </SearchProvider>
+      </SpotifyPlayerProvider>
+    </NotificationProvider>
   );
 }
 
