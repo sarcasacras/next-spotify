@@ -13,6 +13,15 @@ import { useNotification } from "@/contexts/NotificationContext";
 import { showErrorNotification } from "@/lib/error-handling";
 import type { SpotifyTrack, SpotifySavedTrack } from "@/types/spotify";
 
+const shuffleArray = (array: SpotifyTrack[]): SpotifyTrack[] => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
 declare global {
   interface Window {
     onSpotifyWebPlaybackSDKReady: () => void;
@@ -32,6 +41,8 @@ interface SpotifyPlayerState {
   is_paused: boolean;
   is_active: boolean;
   current_track: Spotify.Track | null;
+  next_tracks: Spotify.Track[];
+  previous_tracks: Spotify.Track[];
   position: number;
   duration: number;
   volume: number;
@@ -42,6 +53,7 @@ interface SpotifyPlayerContextType extends SpotifyPlayerState {
   initializePlayer: () => void;
   playTrack: (uri: string) => Promise<void>;
   playTracks: (uris: string[], startIndex?: number) => Promise<void>;
+  shuffleLibrary: () => Promise<void>;
   togglePlayPause: () => void;
   nextTrack: () => void;
   previousTrack: () => void;
@@ -71,6 +83,8 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
     is_paused: true,
     is_active: false,
     current_track: null,
+    next_tracks: [],
+    previous_tracks: [],
     position: 0,
     duration: 0,
     volume: 0.5,
@@ -107,17 +121,55 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
       setState((prev) => ({ ...prev, device_id: null, is_active: false }));
     });
 
-    player.addListener("player_state_changed", (state: Spotify.PlaybackState | null) => {
-      if (!state) return;
+    player.addListener(
+      "player_state_changed",
+      (state: Spotify.PlaybackState | null) => {
+        if (!state) return;
 
-      setState((prev) => ({
-        ...prev,
-        current_track: state.track_window.current_track,
-        is_paused: state.paused,
-        position: state.position,
-        duration: state.duration,
-      }));
-    });
+        setState((prev) => {
+          // Check if track actually changed (not just a pause/resume/position update)
+          const trackChanged =
+            prev.current_track?.id !== state.track_window.current_track?.id;
+
+          if (trackChanged && state.track_window.current_track) {
+            console.log(
+              "🎵 NEW TRACK STARTED:",
+              state.track_window.current_track.name
+            );
+            console.log(
+              "📋 Next tracks when new track started:",
+              state.track_window.next_tracks
+            );
+            console.log(
+              "📋 Previous tracks when new track started:",
+              state.track_window.previous_tracks
+            );
+
+            if (state.track_window.next_tracks.length === 0) {
+              console.log("haha, 0");
+              console.log("🔄 Queue is empty, triggering shuffle library...");
+              console.log("📱 Device ID:", prev.device_id);
+              console.log("📀 All liked tracks count:", prev.allLikedTracks.length);
+
+              // Pass the correct values directly to shuffleLibrary
+              setTimeout(() => {
+                shuffleLibrary(prev.device_id as string, prev.allLikedTracks);
+              }, 100);
+            }
+          }
+
+          return {
+            ...prev,
+            current_track: state.track_window.current_track,
+            next_tracks: state.track_window.next_tracks,
+            previous_tracks: state.track_window.previous_tracks,
+            is_paused: state.paused,
+            position: state.position,
+            duration: state.duration,
+          };
+        });
+      }
+    );
 
     player.addListener("authentication_error", () => {
       player.disconnect();
@@ -126,11 +178,9 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
       }, 1000);
     });
 
-    player.addListener("initialization_error", () => {
-    });
+    player.addListener("initialization_error", () => {});
 
-    player.addListener("account_error", () => {
-    });
+    player.addListener("account_error", () => {});
 
     player.addListener("playback_error", ({ message }: { message: string }) => {
       if (message.includes("no list was loaded")) {
@@ -141,7 +191,7 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
           position: 0,
           duration: 0,
         }));
-        
+
         player.disconnect();
         setTimeout(() => {
           initializePlayer();
@@ -156,15 +206,12 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
     if (!state.device_id) return;
 
     try {
-      await spotifyFetchVoid(
-        `/me/player/play?device_id=${state.device_id}`,
-        {
-          method: "PUT",
-          body: JSON.stringify({
-            uris: [uri],
-          }),
-        }
-      );
+      await spotifyFetchVoid(`/me/player/play?device_id=${state.device_id}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          uris: [uri],
+        }),
+      });
     } catch (error) {
       showErrorNotification(error as any, addNotification);
     }
@@ -174,16 +221,46 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
     if (!state.device_id) return;
 
     try {
-      await spotifyFetchVoid(
-        `/me/player/play?device_id=${state.device_id}`,
-        {
-          method: "PUT",
-          body: JSON.stringify({
-            uris: uris,
-            offset: { position: startIndex },
-          }),
-        }
-      );
+      await spotifyFetchVoid(`/me/player/play?device_id=${state.device_id}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          uris: uris,
+          offset: { position: startIndex },
+        }),
+      });
+    } catch (error) {
+      showErrorNotification(error as any, addNotification);
+    }
+  };
+
+  const shuffleLibrary = async (deviceId?: string, likedTracks?: SpotifyTrack[]) => {
+    // Use provided values or fall back to state
+    const finalDeviceId = deviceId || state.device_id;
+    const finalLikedTracks = likedTracks || state.allLikedTracks;
+    
+    if (!finalDeviceId || !finalLikedTracks.length) {
+      console.log("❌ shuffleLibrary failed - no device or tracks:", {
+        deviceId: finalDeviceId,
+        tracksCount: finalLikedTracks.length
+      });
+      return;
+    }
+
+    console.log("✅ shuffleLibrary executing with:", {
+      deviceId: finalDeviceId,
+      tracksCount: finalLikedTracks.length
+    });
+
+    const shuffledTracks = shuffleArray(finalLikedTracks);
+    const shuffledUris = shuffledTracks.map((track) => track.uri);
+
+    try {
+      await spotifyFetchVoid(`/me/player/play?device_id=${finalDeviceId}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          uris: shuffledUris,
+        }),
+      });
     } catch (error) {
       showErrorNotification(error as any, addNotification);
     }
@@ -232,7 +309,7 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
   // Update allLikedTracks when initialLikedTracks changes
   useEffect(() => {
     if (initialLikedTracks.length > 0) {
-      const tracks = initialLikedTracks.map(item => item.track);
+      const tracks = initialLikedTracks.map((item) => item.track);
       setAllLikedTracks(tracks);
     }
   }, [initialLikedTracks]);
@@ -247,11 +324,11 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
     return () => {
       if (state.player) {
         state.player.disconnect();
-        setState((prev) => ({ 
-          ...prev, 
-          player: null, 
-          device_id: null, 
-          is_active: false 
+        setState((prev) => ({
+          ...prev,
+          player: null,
+          device_id: null,
+          is_active: false,
         }));
       }
     };
@@ -262,6 +339,7 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
     initializePlayer,
     playTrack,
     playTracks,
+    shuffleLibrary,
     togglePlayPause,
     nextTrack,
     previousTrack,

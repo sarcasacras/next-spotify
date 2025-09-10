@@ -11,6 +11,8 @@ import LikeButton from "@/components/ui/LikeButton";
 export default function SpotifyPlayer() {
   const {
     current_track,
+    next_tracks,
+    previous_tracks,
     is_paused,
     position,
     duration,
@@ -22,6 +24,7 @@ export default function SpotifyPlayer() {
     seek,
     setVolume,
     allLikedTracks,
+    shuffleLibrary,
   } = useSpotifyPlayer();
 
   const { toggleLikedTrackMutation, isTrackLiked } = useSearch();
@@ -71,6 +74,14 @@ export default function SpotifyPlayer() {
 
   const handleLikeToggle = async (trackId: string, currentlyLiked: boolean) => {
     await toggleLikedTrackMutation(trackId, currentlyLiked);
+  };
+
+  const handlePlayButtonClick = async () => {
+    if (current_track) {
+      togglePlayPause();
+    } else {
+      await shuffleLibrary();
+    }
   };
 
   const progressPercentage =
@@ -165,17 +176,17 @@ export default function SpotifyPlayer() {
             </motion.button>
 
             <motion.button
-              onClick={togglePlayPause}
-              disabled={!current_track}
+              onClick={handlePlayButtonClick}
+              disabled={!device_id || allLikedTracks.length === 0}
               className={`relative inline-flex cursor-pointer items-center justify-center p-0.5 overflow-hidden rounded-full group transition-all ${
-                current_track
+                device_id && allLikedTracks.length > 0
                   ? "bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400"
                   : "bg-surface-hover cursor-not-allowed"
               }`}
             >
               <span
                 className={`relative p-2 transition-all ease-in duration-75 rounded-full font-bold focus:outline-none ${
-                  current_track
+                  device_id && allLikedTracks.length > 0
                     ? "bg-surface group-hover:bg-transparent text-text-primary"
                     : "bg-surface text-secondary"
                 }`}
