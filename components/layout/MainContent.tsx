@@ -9,8 +9,9 @@ interface MainContentProps {
 export default function MainContent({ children }: MainContentProps) {
   const { data: session } = useSession();
 
-  // Apply header padding only when user is authenticated (Header is visible)
-  const mainClasses = session?.accessToken ? "pt-16" : "";
+  // Apply header padding when user is authenticated (Header is visible)
+  // Apply bottom padding on mobile only to prevent overlap with fixed Spotify player
+  const mainClasses = session?.accessToken ? "pt-16 pb-32 md:pb-0" : "";
 
   return (
     <main className={mainClasses}>

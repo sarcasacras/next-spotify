@@ -39,7 +39,7 @@ export default function Pagination({
 
   return (
     <div
-      className="flex items-center justify-center mt-8 px-4"
+      className="flex items-center justify-center mt-8 px-4 mb-8 md:mb-0"
       onKeyDown={handleKeyDown}
       tabIndex={0}
     >

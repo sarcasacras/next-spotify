@@ -33,7 +33,7 @@ export default function SearchDropdown({ isOpen, onClose }: SearchDropdownProps)
           />
 
           <motion.div
-            className="absolute top-full left-0 right-0 mt-2 bg-surface border border-border rounded-xl shadow-2xl z-50 max-h-96 overflow-hidden"
+            className="fixed top-16 left-4 right-4 md:absolute md:top-full md:left-0 md:right-0 mt-2 bg-surface border border-border rounded-xl shadow-2xl z-50 max-h-96 overflow-hidden"
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}

@@ -36,7 +36,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white pb-24">
+    <div className="min-h-screen bg-black text-white pb-0 md:pb-24">
       <main className="p-8">
         {isLoading && (
           <div className="flex items-center justify-center min-h-[50vh]">

@@ -50,7 +50,7 @@ export default function Header() {
           <img src="/logo.png" alt="" height={48} width={100} />
         </div>
 
-        <div className="flex-1 max-w-md mx-2 md:mx-8 relative" ref={searchRef}>
+        <div className="flex-1 md:max-w-md mx-1 md:mx-8 relative" ref={searchRef}>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <svg
