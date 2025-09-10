@@ -151,9 +151,9 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
     player.addListener("playback_error", ({ message }: { message: string }) => {
       console.error("▶️ [PLAYBACK ERROR] Playback failed:", message);
       
-      // Handle specific "no list was loaded" error
+      // Handle specific "no list was loaded" error with auto-reconnect
       if (message.includes("no list was loaded")) {
-        console.log("🎵 [PLAYBACK ERROR] Player has no active queue. This may happen during reconnection.");
+        console.log("🎵 [PLAYBACK ERROR] Player has no active queue. Attempting to reconnect...");
         // Clear current track state to prevent further operations
         setState((prev) => ({
           ...prev,
@@ -162,6 +162,13 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
           position: 0,
           duration: 0,
         }));
+        
+        // Auto-reconnect to restore player functionality
+        console.log("🔄 [PLAYBACK ERROR] Disconnecting and reinitializing player...");
+        player.disconnect();
+        setTimeout(() => {
+          initializePlayer();
+        }, 1500); // Slightly longer delay than auth error to ensure clean disconnection
       }
     });
 
