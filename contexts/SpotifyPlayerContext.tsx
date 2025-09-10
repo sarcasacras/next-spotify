@@ -145,7 +145,7 @@ export const SpotifyPlayerProvider: React.FC<SpotifyPlayerProviderProps> = ({
               state.track_window.previous_tracks
             );
 
-            if (state.track_window.next_tracks.length === 0) {
+            if (state.track_window.next_tracks.length === 0 && state.track_window.previous_tracks.length !== 0) {
               console.log("haha, 0");
               console.log("🔄 Queue is empty, triggering shuffle library...");
               console.log("📱 Device ID:", prev.device_id);
