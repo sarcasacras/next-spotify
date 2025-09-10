@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useSession } from "next-auth/react";
 import { getAllUserLikedTracks } from "@/lib/spotify";
 import { SpotifyAlbum } from "@/types/spotify";
@@ -25,7 +26,9 @@ export default function Home() {
     gcTime: 10 * 60 * 1000, // 10 minutes - keep in cache longer
   });
 
-  const albums: SpotifyAlbum[] = tracks ? extractUniqueAlbums(tracks) : [];
+  const albums: SpotifyAlbum[] = React.useMemo(() => {
+    return tracks ? extractUniqueAlbums(tracks) : [];
+  }, [tracks]);
 
   if (!session?.accessToken) {
     return <LandingPage />;
