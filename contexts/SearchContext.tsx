@@ -15,7 +15,6 @@ import {
   searchUserLibrary,
   saveLikedTrack,
   removeLikedTrack,
-  checkLikedTracks,
 } from "@/lib/spotify";
 import { useNotification } from "@/contexts/NotificationContext";
 import {
@@ -194,7 +193,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
         if (previousData) {
           queryClient.setQueryData(queryKey, previousData);
         }
-        
+
         showErrorNotification(error as any, addNotification);
       }
     },

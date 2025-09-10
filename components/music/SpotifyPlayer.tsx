@@ -11,8 +11,6 @@ import LikeButton from "@/components/ui/LikeButton";
 export default function SpotifyPlayer() {
   const {
     current_track,
-    next_tracks,
-    previous_tracks,
     is_paused,
     position,
     duration,
